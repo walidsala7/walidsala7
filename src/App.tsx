@@ -92,10 +92,17 @@ export default function App() {
 
   // Dark mode effect
   useEffect(() => {
+    const root = window.document.documentElement;
     if (isDarkMode) {
-      document.documentElement.classList.add('dark');
+      root.classList.add('dark');
+      document.body.classList.add('dark');
+      document.body.style.backgroundColor = '#0B0F1A';
+      document.body.style.color = '#f1f5f9';
     } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
+      document.body.classList.remove('dark');
+      document.body.style.backgroundColor = '#ffffff';
+      document.body.style.color = '#0f172a';
     }
   }, [isDarkMode]);
 
@@ -254,7 +261,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen pb-20 font-sans bg-white dark:bg-[#0B0F1A] text-slate-900 dark:text-slate-100 transition-colors duration-300" dir={t.dir}>
+    <div className={`min-h-screen pb-20 font-sans transition-colors duration-300 ${isDarkMode ? 'dark bg-[#0B0F1A] text-slate-100' : 'bg-white text-slate-900'}`} dir={t.dir}>
       <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 z-[90] bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform">
         <WhatsAppIcon className="w-8 h-8" />
       </a>

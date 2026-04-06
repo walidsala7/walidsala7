@@ -5,8 +5,14 @@
   --font-sans: "Inter", "Cairo", ui-sans-serif, system-ui, sans-serif;
 }
 
+@variant dark (&:where(.dark, .dark *));
+
 body {
-  @apply bg-white dark:bg-[#0B0F1A] transition-colors duration-300;
+  @apply transition-colors duration-300;
+}
+
+.dark {
+  color-scheme: dark;
 }
 
 .no-scrollbar::-webkit-scrollbar {
