@@ -204,6 +204,9 @@ export default function App() {
     if (selectedProduct.category === 'credit' || selectedProduct.category === 'server') {
       if (selectedProduct.requiresSN) {
         message += `🆔 SN: ${sn}\n`;
+        if (selectedProduct.id === 203) {
+          message += `⏳ Wait: (1-30Min Available Slot) Max 1-6 Hrs | Few Time Fast Manually\n`;
+        }
       }
       if (selectedProduct.sizeOptions) {
         message += `📏 Size: ${selectedSize}\n`;
@@ -647,6 +650,16 @@ export default function App() {
                                       <Hash size={20} />
                                     </div>
                                   </div>
+                                  {selectedProduct.id === 203 && (
+                                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="p-4 bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-100 dark:border-blue-900 rounded-2xl flex items-center gap-3">
+                                      <Clock className="text-blue-600 w-5 h-5 shrink-0" />
+                                      <p className="text-xs font-black text-blue-800 dark:text-blue-200 leading-tight">
+                                        {lang === 'ar' 
+                                          ? '( 1-30Min Available Slot ) Max 1-6 Hrs | Few Time Fast Manually' 
+                                          : '( 1-30Min Available Slot ) Max 1-6 Hrs | Few Time Fast Manually'}
+                                      </p>
+                                    </motion.div>
+                                  )}
                                 </div>
                               )}
 
