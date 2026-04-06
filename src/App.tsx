@@ -69,7 +69,7 @@ export default function App() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [copyStatus, setCopyStatus] = useState("");
   const [orderSuccess, setOrderSuccess] = useState(false);
-  const [timer, setTimer] = useState(180);
+  const [timer, setTimer] = useState(300);
   const [orderId, setOrderId] = useState<number | null>(null);
   const [orderStatus, setOrderStatus] = useState<OrderStatus>("pending");
   const [lastUpdateId, setLastUpdateId] = useState(0);
@@ -169,7 +169,7 @@ export default function App() {
       setTimeout(() => {
         setSelectedProduct(null);
         setOrderSuccess(false);
-        setTimer(180);
+        setTimer(300);
       }, 2000);
     }
     return () => clearInterval(interval);
@@ -239,7 +239,7 @@ export default function App() {
         })
       });
     } catch (e) {}
-    setTimer(180);
+    setTimer(300);
     setOrderSuccess(true);
   };
 
@@ -413,13 +413,15 @@ export default function App() {
                                 cx="50" cy="50" r="40" 
                                 fill="transparent"
                                 initial={{ pathLength: 0 }}
-                                animate={{ pathLength: timer / 180 }}
+                                animate={{ pathLength: timer / 300 }}
                                 transition={{ duration: 1, ease: "linear" }}
                               ></motion.circle>
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
-                              <span className="text-4xl font-black text-blue-600 leading-none">{timer}</span>
-                              <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest mt-1">seconds</span>
+                              <span className="text-4xl font-black text-blue-600 leading-none">
+                                {Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, '0')}
+                              </span>
+                              <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest mt-1">minutes</span>
                             </div>
                           </div>
                           <div className="space-y-3">
