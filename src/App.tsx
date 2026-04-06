@@ -254,29 +254,32 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen pb-20 font-sans bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300" dir={t.dir}>
+    <div className="min-h-screen pb-20 font-sans bg-white dark:bg-[#0B0F1A] text-slate-900 dark:text-slate-100 transition-colors duration-300" dir={t.dir}>
       <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 z-[90] bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform">
         <WhatsAppIcon className="w-8 h-8" />
       </a>
       
-      <nav className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b dark:border-slate-800 px-4 py-4 sticky top-0 z-50 shadow-sm">
+      <nav className="bg-white/90 dark:bg-[#161B26]/90 backdrop-blur-md border-b dark:border-slate-800 px-4 py-4 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <span className="text-xl md:text-2xl font-black text-blue-600 tracking-tighter uppercase shrink-0">WALID SALA7</span>
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-            <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl shrink-0">
-              <button onClick={() => setCurrency('USD')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${currency === 'USD' ? 'bg-white dark:bg-slate-700 text-blue-600 shadow-sm' : 'text-slate-500'}`}>{t.usd}</button>
-              <button onClick={() => setCurrency('EGP')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${currency === 'EGP' ? 'bg-white dark:bg-slate-700 text-blue-600 shadow-sm' : 'text-slate-500'}`}>{t.egp}</button>
+            <div className="flex items-center bg-slate-100 dark:bg-[#1F2937] p-1 rounded-xl shrink-0">
+              <button onClick={() => setCurrency('USD')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${currency === 'USD' ? 'bg-white dark:bg-[#161B26] text-blue-600 shadow-sm' : 'text-slate-500'}`}>{t.usd}</button>
+              <button onClick={() => setCurrency('EGP')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${currency === 'EGP' ? 'bg-white dark:bg-[#161B26] text-blue-600 shadow-sm' : 'text-slate-500'}`}>{t.egp}</button>
             </div>
-            <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl shrink-0">
-              <button onClick={() => setLang('ar')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${lang === 'ar' ? 'bg-white dark:bg-slate-700 text-blue-600 shadow-sm' : 'text-slate-500'}`}>العربية</button>
-              <button onClick={() => setLang('en')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${lang === 'en' ? 'bg-white dark:bg-slate-700 text-blue-600 shadow-sm' : 'text-slate-500'}`}>English</button>
+            <div className="flex items-center bg-slate-100 dark:bg-[#1F2937] p-1 rounded-xl shrink-0">
+              <button onClick={() => setLang('ar')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${lang === 'ar' ? 'bg-white dark:bg-[#161B26] text-blue-600 shadow-sm' : 'text-slate-500'}`}>العربية</button>
+              <button onClick={() => setLang('en')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${lang === 'en' ? 'bg-white dark:bg-[#161B26] text-blue-600 shadow-sm' : 'text-slate-500'}`}>English</button>
             </div>
             <button 
               onClick={() => setIsDarkMode(!isDarkMode)} 
-              className="p-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all shadow-sm"
+              className="flex items-center gap-2 px-3 py-2 bg-slate-100 dark:bg-[#1F2937] rounded-xl text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all shadow-sm"
               title={isDarkMode ? t.lightMode : t.darkMode}
             >
               {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+              <span className="text-[10px] font-black uppercase tracking-widest hidden sm:block">
+                {isDarkMode ? 'Light' : 'Dark'}
+              </span>
             </button>
           </div>
         </div>
@@ -294,14 +297,14 @@ export default function App() {
               placeholder={t.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full ${t.dir === 'rtl' ? 'pr-12 pl-6' : 'pl-12 pr-6'} py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 focus:border-blue-500 outline-none font-bold shadow-sm transition-all bg-white dark:bg-slate-900 text-slate-900 dark:text-white`}
+              className={`w-full ${t.dir === 'rtl' ? 'pr-12 pl-6' : 'pl-12 pr-6'} py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 focus:border-blue-500 outline-none font-bold shadow-sm transition-all bg-white dark:bg-[#161B26] text-slate-900 dark:text-white`}
             />
           </div>
 
           <div className="flex justify-center gap-4 mb-8 overflow-x-auto no-scrollbar py-2">
-            <button onClick={() => setCurrentCategory('rent')} className={`px-8 py-3 rounded-2xl font-black transition-all whitespace-nowrap ${currentCategory === 'rent' ? 'bg-blue-600 text-white shadow-xl scale-105' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border dark:border-slate-800'}`}>{t.rentalsTab}</button>
-            <button onClick={() => setCurrentCategory('credit')} className={`px-8 py-3 rounded-2xl font-black transition-all whitespace-nowrap ${currentCategory === 'credit' ? 'bg-blue-600 text-white shadow-xl scale-105' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border dark:border-slate-800'}`}>{t.creditsTab}</button>
-            <button onClick={() => setCurrentCategory('server')} className={`px-8 py-3 rounded-2xl font-black transition-all whitespace-nowrap ${currentCategory === 'server' ? 'bg-blue-600 text-white shadow-xl scale-105' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border dark:border-slate-800'}`}>{t.serverTab}</button>
+            <button onClick={() => setCurrentCategory('rent')} className={`px-8 py-3 rounded-2xl font-black transition-all whitespace-nowrap ${currentCategory === 'rent' ? 'bg-blue-600 text-white shadow-xl scale-105' : 'bg-white dark:bg-[#161B26] text-slate-600 dark:text-slate-400 border dark:border-slate-800'}`}>{t.rentalsTab}</button>
+            <button onClick={() => setCurrentCategory('credit')} className={`px-8 py-3 rounded-2xl font-black transition-all whitespace-nowrap ${currentCategory === 'credit' ? 'bg-blue-600 text-white shadow-xl scale-105' : 'bg-white dark:bg-[#161B26] text-slate-600 dark:text-slate-400 border dark:border-slate-800'}`}>{t.creditsTab}</button>
+            <button onClick={() => setCurrentCategory('server')} className={`px-8 py-3 rounded-2xl font-black transition-all whitespace-nowrap ${currentCategory === 'server' ? 'bg-blue-600 text-white shadow-xl scale-105' : 'bg-white dark:bg-[#161B26] text-slate-600 dark:text-slate-400 border dark:border-slate-800'}`}>{t.serverTab}</button>
           </div>
         </div>
 
@@ -310,8 +313,8 @@ export default function App() {
             .filter(p => p.category === currentCategory)
             .filter(p => (lang === 'en' && p.nameEn ? p.nameEn : p.name).toLowerCase().includes(searchQuery.toLowerCase()))
             .map((product) => (
-            <div key={product.id} className="bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all flex flex-col group">
-              <div className="h-36 bg-white dark:bg-slate-800 flex items-center justify-center relative overflow-hidden">
+            <div key={product.id} className="bg-white dark:bg-[#161B26] rounded-[2rem] overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all flex flex-col group">
+              <div className="h-36 bg-white dark:bg-[#1F2937] flex items-center justify-center relative overflow-hidden">
                 <img src={product.image} alt={lang === 'en' && product.nameEn ? product.nameEn : product.name} className="h-full w-full object-cover transition-transform group-hover:scale-110" referrerPolicy="no-referrer" />
               </div>
               <div className="p-6 flex flex-col flex-grow">
@@ -321,7 +324,7 @@ export default function App() {
                     <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{t.priceLabel}</p>
                     <p className="text-2xl font-black text-blue-600 leading-none" title={product.tooltip}>{formatPrice(product.priceUsd, false, product.category === 'credit')}</p>
                   </div>
-                  <button onClick={() => { setSelectedProduct(product); setOrderSuccess(false); setQuantity(product.minQty || 1); setSelectedSize(""); setDownloadLink(""); }} className="bg-slate-900 dark:bg-slate-800 text-white px-6 py-3 rounded-2xl font-black text-sm hover:bg-blue-600 transition-all active:scale-95">
+                  <button onClick={() => { setSelectedProduct(product); setOrderSuccess(false); setQuantity(product.minQty || 1); setSelectedSize(""); setDownloadLink(""); }} className="bg-slate-900 dark:bg-[#1F2937] text-white px-6 py-3 rounded-2xl font-black text-sm hover:bg-blue-600 transition-all active:scale-95">
                     {t.rentNow}
                   </button>
                 </div>
@@ -330,30 +333,30 @@ export default function App() {
           ))}
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 md:p-12 border border-slate-100 dark:border-slate-800 shadow-sm max-w-4xl mx-auto text-center">
+        <div className="bg-white dark:bg-[#161B26] rounded-[2.5rem] p-8 md:p-12 border border-slate-100 dark:border-slate-800 shadow-sm max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-10 flex items-center justify-center gap-4">
             <Wallet className="text-blue-600" /> {t.paymentTitle}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="p-6 rounded-3xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900 flex items-center justify-between group hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors">
               <div className="flex items-center gap-4">
-                <div className="p-1 bg-white dark:bg-slate-800 rounded-2xl shadow-sm text-rose-500 overflow-hidden">
+                <div className="p-1 bg-white dark:bg-[#1F2937] rounded-2xl shadow-sm text-rose-500 overflow-hidden">
                   <img src={VODAFONE_QR_URL} alt="Vodafone QR" className="w-12 h-12 object-contain" referrerPolicy="no-referrer" />
                 </div>
                 <span className="font-black text-rose-900 dark:text-rose-100">{t.vodafone}</span>
               </div>
-              <button onClick={() => handleCopy(VODAFONE_NUMBER, 'v1')} className="font-mono font-bold text-sm text-rose-600 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl border border-rose-100 dark:border-rose-900 flex items-center gap-2">
+              <button onClick={() => handleCopy(VODAFONE_NUMBER, 'v1')} className="font-mono font-bold text-sm text-rose-600 bg-white dark:bg-[#1F2937] px-4 py-2 rounded-xl border border-rose-100 dark:border-rose-900 flex items-center gap-2">
                 {copyStatus === 'v1' ? <CheckCircle2 size={16} /> : <img src={VODAFONE_QR_URL} alt="QR" className="w-4 h-4 object-contain" referrerPolicy="no-referrer" />} {VODAFONE_NUMBER}
               </button>
             </div>
             <div className="p-6 rounded-3xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900 flex items-center justify-between group hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-colors">
               <div className="flex items-center gap-4">
-                <div className="p-1 bg-white dark:bg-slate-800 rounded-2xl shadow-sm text-amber-500 overflow-hidden">
+                <div className="p-1 bg-white dark:bg-[#1F2937] rounded-2xl shadow-sm text-amber-500 overflow-hidden">
                   <img src={BINANCE_QR_URL} alt="Binance QR" className="w-12 h-12 object-contain" referrerPolicy="no-referrer" />
                 </div>
                 <span className="font-black text-amber-900 dark:text-amber-100">{t.binance}</span>
               </div>
-              <button onClick={() => handleCopy(BINANCE_ID, 'b1')} className="font-mono font-bold text-sm text-amber-600 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl border border-amber-100 dark:border-amber-900 flex items-center gap-2">
+              <button onClick={() => handleCopy(BINANCE_ID, 'b1')} className="font-mono font-bold text-sm text-amber-600 bg-white dark:bg-[#1F2937] px-4 py-2 rounded-xl border border-amber-100 dark:border-amber-900 flex items-center gap-2">
                 {copyStatus === 'b1' ? <CheckCircle2 size={16} /> : <img src={BINANCE_QR_URL} alt="QR" className="w-4 h-4 object-contain" referrerPolicy="no-referrer" />} {BINANCE_ID}
               </button>
             </div>
@@ -369,9 +372,9 @@ export default function App() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="bg-white dark:bg-slate-900 rounded-t-[2.5rem] sm:rounded-[3.5rem] w-full max-w-md max-h-[92vh] overflow-hidden shadow-2xl flex flex-col"
+              className="bg-white dark:bg-[#161B26] rounded-t-[2.5rem] sm:rounded-[3.5rem] w-full max-w-md max-h-[92vh] overflow-hidden shadow-2xl flex flex-col"
             >
-              <div className="p-6 sm:p-8 border-b dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-900 sticky top-0 z-20">
+              <div className="p-6 sm:p-8 border-b dark:border-slate-800 flex justify-between items-center bg-white dark:bg-[#161B26] sticky top-0 z-20">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-100">
                     <CreditCard className="text-white" size={20} />
@@ -420,7 +423,7 @@ export default function App() {
                             </div>
                             <p className="text-slate-500 dark:text-slate-400 font-bold text-sm leading-relaxed max-w-[280px] mx-auto">{t.waitOwner}</p>
                           </div>
-                          <button onClick={() => { setOrderSuccess(false); setSelectedProduct(null); }} className="px-8 py-4 bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-slate-400 hover:text-rose-600 rounded-3xl font-black text-sm transition-all border-2 border-transparent hover:border-rose-100 dark:hover:border-rose-900 w-full">
+                          <button onClick={() => { setOrderSuccess(false); setSelectedProduct(null); }} className="px-8 py-4 bg-slate-100 dark:bg-[#1F2937] hover:bg-rose-50 dark:hover:bg-rose-950/30 text-slate-400 hover:text-rose-600 rounded-3xl font-black text-sm transition-all border-2 border-transparent hover:border-rose-100 dark:hover:border-rose-900 w-full">
                             {t.cancelProcess}
                           </button>
                         </div>
@@ -446,7 +449,7 @@ export default function App() {
                             <h3 className="font-black text-slate-900 dark:text-white text-3xl tracking-tight">{t.rejected}</h3>
                             <p className="text-slate-500 dark:text-slate-400 font-bold text-sm">{t.rejectedMsg}</p>
                           </div>
-                          <button onClick={() => setOrderSuccess(false)} className="px-10 py-5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-[2rem] font-black w-full transition-all">
+                          <button onClick={() => setOrderSuccess(false)} className="px-10 py-5 bg-slate-100 dark:bg-[#1F2937] hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-[2rem] font-black w-full transition-all">
                             {t.backToStore}
                           </button>
                         </div>
@@ -461,9 +464,9 @@ export default function App() {
                           <h3 className="font-black text-slate-800 dark:text-slate-200 uppercase tracking-widest text-[11px]">{lang === 'ar' ? 'تفاصيل الطلب' : 'Order Details'}</h3>
                         </div>
                         
-                        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-[2.5rem] p-6 border-2 border-white dark:border-slate-800 shadow-sm space-y-6">
+                        <div className="bg-white dark:bg-[#1F2937]/50 rounded-[2.5rem] p-6 border-2 border-white dark:border-slate-800 shadow-sm space-y-6">
                           <div className="flex items-center gap-5">
-                            <div className="w-24 h-24 bg-white dark:bg-slate-700 rounded-3xl overflow-hidden border-2 border-white dark:border-slate-800 shadow-sm shrink-0 p-1">
+                            <div className="w-24 h-24 bg-white dark:bg-[#1F2937] rounded-3xl overflow-hidden border-2 border-white dark:border-slate-800 shadow-sm shrink-0 p-1">
                               <img src={selectedProduct.image} alt={lang === 'en' && selectedProduct.nameEn ? selectedProduct.nameEn : selectedProduct.name} className="w-full h-full object-cover rounded-2xl" referrerPolicy="no-referrer" />
                             </div>
                             <div className="flex-grow">
@@ -515,7 +518,7 @@ export default function App() {
                           <h3 className="font-black text-slate-800 dark:text-slate-200 uppercase tracking-widest text-[11px]">{lang === 'ar' ? 'تكوين الخدمة' : 'Service Configuration'}</h3>
                         </div>
 
-                        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-[2.5rem] p-6 space-y-6 border-2 border-white dark:border-slate-800 shadow-sm">
+                        <div className="bg-white dark:bg-[#1F2937]/50 rounded-[2.5rem] p-6 space-y-6 border-2 border-white dark:border-slate-800 shadow-sm">
                           {(selectedProduct.category === 'credit' || selectedProduct.category === 'server') && (
                             <div className="space-y-6">
                               {selectedProduct.sizeOptions && (
@@ -532,7 +535,7 @@ export default function App() {
                                         className={`py-4 px-3 rounded-2xl text-xs font-black transition-all border-2 flex flex-col items-center gap-1 ${
                                           selectedSize === option 
                                             ? 'bg-blue-600 border-blue-600 text-white shadow-xl shadow-blue-100 scale-[1.02]' 
-                                            : 'bg-white dark:bg-slate-700 border-slate-100 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-blue-300'
+                                            : 'bg-white dark:bg-[#1F2937] border-slate-100 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-blue-300'
                                         }`}
                                       >
                                         <span>{option}</span>
@@ -586,7 +589,7 @@ export default function App() {
                                         value={downloadLink} 
                                         onChange={(e) => setDownloadLink(e.target.value)} 
                                         placeholder="https://halabtech.com/..." 
-                                        className="w-full pl-6 pr-12 py-5 rounded-3xl border-2 border-white dark:border-slate-800 font-bold focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 outline-none transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
+                                        className="w-full pl-6 pr-12 py-5 rounded-3xl border-2 border-white dark:border-slate-800 font-bold focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 outline-none transition-all bg-white dark:bg-[#1F2937] text-slate-900 dark:text-white shadow-sm"
                                       />
                                       <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors">
                                         <Link size={20} />
@@ -603,7 +606,7 @@ export default function App() {
                                     {t.quantityLabel}
                                   </label>
                                   <div className="relative">
-                                    <input type="number" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value) || 0)} className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 font-black text-center text-2xl focus:border-blue-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white outline-none shadow-sm" />
+                                    <input type="number" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value) || 0)} className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 font-black text-center text-2xl focus:border-blue-500 bg-white dark:bg-[#1F2937] text-slate-900 dark:text-white outline-none shadow-sm" />
                                     <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300">
                                       <span className="text-[10px] font-black uppercase tracking-widest">Qty</span>
                                     </div>
@@ -623,7 +626,7 @@ export default function App() {
                                     value={selectedProduct.category === 'credit' ? email : whatsappNumber} 
                                     onChange={(e) => selectedProduct.category === 'credit' ? setEmail(e.target.value) : setWhatsappNumber(e.target.value)} 
                                     placeholder={selectedProduct.category === 'credit' ? "example@mail.com" : t.whatsappNumberPlaceholder} 
-                                    className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 font-bold focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 outline-none transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
+                                    className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 font-bold focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 outline-none transition-all bg-white dark:bg-[#1F2937] text-slate-900 dark:text-white shadow-sm"
                                   />
                                   <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors">
                                     {selectedProduct.category === 'credit' ? <Mail size={20} /> : <WhatsAppIcon className="w-5 h-5" />}
@@ -640,11 +643,11 @@ export default function App() {
                                 {t.remoteMethod}
                               </label>
                               <div className="grid grid-cols-2 gap-4">
-                                <button onClick={() => setRemoteTool('ultra')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${remoteTool === 'ultra' ? 'border-blue-500 bg-blue-600 text-white shadow-xl shadow-blue-100 scale-[1.02]' : 'border-white dark:border-slate-800 bg-white dark:bg-slate-700 text-slate-400 hover:border-blue-200'}`}>
+                                <button onClick={() => setRemoteTool('ultra')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${remoteTool === 'ultra' ? 'border-blue-500 bg-blue-600 text-white shadow-xl shadow-blue-100 scale-[1.02]' : 'border-white dark:border-slate-800 bg-white dark:bg-[#1F2937] text-slate-400 hover:border-blue-200'}`}>
                                   <Monitor className={remoteTool === 'ultra' ? 'text-white' : 'text-slate-400'} size={32} />
                                   <span className="text-[10px] font-black uppercase tracking-widest">UltraViewer</span>
                                 </button>
-                                <button onClick={() => setRemoteTool('anydesk')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${remoteTool === 'anydesk' ? 'border-red-500 bg-red-600 text-white shadow-xl shadow-red-100 scale-[1.02]' : 'border-white dark:border-slate-800 bg-white dark:bg-slate-700 text-slate-400 hover:border-red-200'}`}>
+                                <button onClick={() => setRemoteTool('anydesk')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${remoteTool === 'anydesk' ? 'border-red-500 bg-red-600 text-white shadow-xl shadow-red-100 scale-[1.02]' : 'border-white dark:border-slate-800 bg-white dark:bg-[#1F2937] text-slate-400 hover:border-red-200'}`}>
                                   <Laptop className={remoteTool === 'anydesk' ? 'text-white' : 'text-slate-400'} size={32} />
                                   <span className="text-[10px] font-black uppercase tracking-widest">AnyDesk</span>
                                 </button>
@@ -654,17 +657,17 @@ export default function App() {
                                 {remoteTool === 'ultra' ? (
                                   <div className="grid grid-cols-1 gap-4">
                                     <div className="relative group">
-                                      <input type="text" placeholder={t.ultraId} value={ultraId} onChange={(e) => setUltraId(e.target.value)} className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 text-center font-mono font-black text-xl focus:border-blue-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white outline-none shadow-sm" />
+                                      <input type="text" placeholder={t.ultraId} value={ultraId} onChange={(e) => setUltraId(e.target.value)} className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 text-center font-mono font-black text-xl focus:border-blue-500 bg-white dark:bg-[#1F2937] text-slate-900 dark:text-white outline-none shadow-sm" />
                                       <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors"><Hash size={20} /></div>
                                     </div>
                                     <div className="relative group">
-                                      <input type="text" placeholder={t.ultraPass} value={ultraPass} onChange={(e) => setUltraPass(e.target.value)} className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 text-center font-mono font-black text-xl focus:border-blue-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white outline-none shadow-sm" />
+                                      <input type="text" placeholder={t.ultraPass} value={ultraPass} onChange={(e) => setUltraPass(e.target.value)} className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 text-center font-mono font-black text-xl focus:border-blue-500 bg-white dark:bg-[#1F2937] text-slate-900 dark:text-white outline-none shadow-sm" />
                                       <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors"><ShieldCheck size={20} /></div>
                                     </div>
                                   </div>
                                 ) : (
                                   <div className="relative group">
-                                    <input type="text" placeholder={t.anyDeskId} value={anyDeskId} onChange={(e) => setAnyDeskId(e.target.value)} className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 text-center font-mono font-black text-xl focus:border-red-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white outline-none shadow-sm" />
+                                    <input type="text" placeholder={t.anyDeskId} value={anyDeskId} onChange={(e) => setAnyDeskId(e.target.value)} className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 text-center font-mono font-black text-xl focus:border-red-500 bg-white dark:bg-[#1F2937] text-slate-900 dark:text-white outline-none shadow-sm" />
                                     <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-red-500 transition-colors"><Hash size={20} /></div>
                                   </div>
                                 )}
@@ -683,17 +686,17 @@ export default function App() {
 
                         <div className="space-y-8">
                           <div className="grid grid-cols-2 gap-4">
-                            <button onClick={() => setPaymentType('vodafone')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${paymentType === 'vodafone' ? 'border-rose-500 bg-rose-600 text-white shadow-xl shadow-rose-100 scale-[1.02]' : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-700 text-slate-400 hover:border-rose-200'}`}>
+                            <button onClick={() => setPaymentType('vodafone')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${paymentType === 'vodafone' ? 'border-rose-500 bg-rose-600 text-white shadow-xl shadow-rose-100 scale-[1.02]' : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-[#1F2937] text-slate-400 hover:border-rose-200'}`}>
                               {paymentType === 'vodafone' ? (
-                                <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm"><img src={VODAFONE_QR_URL} alt="V" className="w-10 h-10 object-contain" referrerPolicy="no-referrer" /></div>
+                                <div className="bg-white dark:bg-[#1F2937] p-2 rounded-2xl shadow-sm"><img src={VODAFONE_QR_URL} alt="V" className="w-10 h-10 object-contain" referrerPolicy="no-referrer" /></div>
                               ) : (
                                 <Smartphone size={32} />
                               )}
                               <span className="text-[10px] font-black uppercase tracking-widest">{t.vodafone}</span>
                             </button>
-                            <button onClick={() => setPaymentType('binance')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${paymentType === 'binance' ? 'border-amber-500 bg-amber-600 text-white shadow-xl shadow-amber-100 scale-[1.02]' : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-700 text-slate-400 hover:border-amber-200'}`}>
+                            <button onClick={() => setPaymentType('binance')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${paymentType === 'binance' ? 'border-amber-500 bg-amber-600 text-white shadow-xl shadow-amber-100 scale-[1.02]' : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-[#1F2937] text-slate-400 hover:border-amber-200'}`}>
                               {paymentType === 'binance' ? (
-                                <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm"><img src={BINANCE_QR_URL} alt="B" className="w-10 h-10 object-contain" referrerPolicy="no-referrer" /></div>
+                                <div className="bg-white dark:bg-[#1F2937] p-2 rounded-2xl shadow-sm"><img src={BINANCE_QR_URL} alt="B" className="w-10 h-10 object-contain" referrerPolicy="no-referrer" /></div>
                               ) : (
                                 <QrCode size={32} />
                               )}
@@ -710,7 +713,7 @@ export default function App() {
                                     <span className="text-[10px] text-amber-700 dark:text-amber-400 font-black uppercase tracking-[0.4em] mb-6 block">{t.binanceIdLabel}</span>
                                     <div className="flex flex-col items-center gap-6">
                                       <span className="text-5xl font-black text-amber-950 dark:text-amber-100 font-mono tracking-tighter">{BINANCE_ID}</span>
-                                      <button onClick={() => handleCopy(BINANCE_ID, 'm_b')} className="flex items-center gap-3 bg-white dark:bg-slate-800 px-8 py-4 rounded-3xl shadow-xl border border-amber-100 dark:border-amber-900 hover:scale-105 transition-all active:scale-95 group/btn">
+                                      <button onClick={() => handleCopy(BINANCE_ID, 'm_b')} className="flex items-center gap-3 bg-white dark:bg-[#1F2937] px-8 py-4 rounded-3xl shadow-xl border border-amber-100 dark:border-amber-900 hover:scale-105 transition-all active:scale-95 group/btn">
                                         {copyStatus === 'm_b' ? (
                                           <><CheckCircle2 className="text-green-500" size={24} /><span className="text-sm font-black text-green-600 uppercase tracking-wider">{t.copied}</span></>
                                         ) : (
@@ -719,13 +722,13 @@ export default function App() {
                                       </button>
                                     </div>
                                   </div>
-                                  <div className="mt-10 bg-white/70 dark:bg-slate-800/70 backdrop-blur-md p-5 rounded-3xl border border-amber-100 dark:border-amber-900 flex items-start gap-3">
+                                  <div className="mt-10 bg-white/70 dark:bg-[#1F2937]/70 backdrop-blur-md p-5 rounded-3xl border border-amber-100 dark:border-amber-900 flex items-start gap-3">
                                     <Info className="text-amber-600 shrink-0" size={16} />
                                     <p className="text-[11px] text-amber-900 dark:text-amber-100 font-bold leading-relaxed">{t.instructionBinance}</p>
                                   </div>
                                 </div>
                                 <div className="relative group">
-                                  <input type="text" placeholder={t.binanceTxPlaceholder} value={binanceTx} onChange={(e) => setBinanceTx(e.target.value)} className="w-full px-8 py-6 rounded-[2.5rem] border-2 border-slate-100 dark:border-slate-800 text-center font-black text-xl focus:border-amber-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-300 shadow-sm" />
+                                  <input type="text" placeholder={t.binanceTxPlaceholder} value={binanceTx} onChange={(e) => setBinanceTx(e.target.value)} className="w-full px-8 py-6 rounded-[2.5rem] border-2 border-slate-100 dark:border-slate-800 text-center font-black text-xl focus:border-amber-500 bg-white dark:bg-[#1F2937] text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-300 shadow-sm" />
                                   <div className="absolute left-8 top-1/2 -translate-y-1/2 text-amber-500 group-focus-within:scale-110 transition-transform"><Hash size={24} /></div>
                                 </div>
                               </div>
@@ -737,7 +740,7 @@ export default function App() {
                                     <span className="text-[10px] text-rose-700 dark:text-rose-400 font-black uppercase tracking-[0.4em] mb-6 block">{t.vodafoneNumberLabel}</span>
                                     <div className="flex flex-col items-center gap-6">
                                       <span className="text-5xl font-black text-rose-950 dark:text-rose-100 font-mono tracking-tighter">{VODAFONE_NUMBER}</span>
-                                      <button onClick={() => handleCopy(VODAFONE_NUMBER, 'm_v')} className="flex items-center gap-3 bg-white dark:bg-slate-800 px-8 py-4 rounded-3xl shadow-xl border border-rose-100 dark:border-rose-900 hover:scale-105 transition-all active:scale-95 group/btn">
+                                      <button onClick={() => handleCopy(VODAFONE_NUMBER, 'm_v')} className="flex items-center gap-3 bg-white dark:bg-[#1F2937] px-8 py-4 rounded-3xl shadow-xl border border-rose-100 dark:border-rose-900 hover:scale-105 transition-all active:scale-95 group/btn">
                                         {copyStatus === 'm_v' ? (
                                           <><CheckCircle2 className="text-green-500" size={24} /><span className="text-sm font-black text-green-600 uppercase tracking-wider">{t.copied}</span></>
                                         ) : (
@@ -746,13 +749,13 @@ export default function App() {
                                       </button>
                                     </div>
                                   </div>
-                                  <div className="mt-10 bg-white/70 dark:bg-slate-800/70 backdrop-blur-md p-5 rounded-3xl border border-rose-100 dark:border-rose-900 flex items-start gap-3">
+                                  <div className="mt-10 bg-white/70 dark:bg-[#1F2937]/70 backdrop-blur-md p-5 rounded-3xl border border-rose-100 dark:border-rose-900 flex items-start gap-3">
                                     <Info className="text-rose-600 shrink-0" size={16} />
                                     <p className="text-[11px] text-rose-900 dark:text-rose-100 font-bold leading-relaxed">{t.instructionVodafone}</p>
                                   </div>
                                 </div>
                                 <div className="relative group">
-                                  <input type="text" placeholder={t.senderPhonePlaceholder} value={senderPhone} onChange={(e) => setSenderPhone(e.target.value)} className="w-full px-8 py-6 rounded-[2.5rem] border-2 border-slate-100 dark:border-slate-800 text-center font-black text-xl focus:border-rose-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-300 shadow-sm" />
+                                  <input type="text" placeholder={t.senderPhonePlaceholder} value={senderPhone} onChange={(e) => setSenderPhone(e.target.value)} className="w-full px-8 py-6 rounded-[2.5rem] border-2 border-slate-100 dark:border-slate-800 text-center font-black text-xl focus:border-rose-500 bg-white dark:bg-[#1F2937] text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-300 shadow-sm" />
                                   <div className="absolute left-8 top-1/2 -translate-y-1/2 text-rose-500 group-focus-within:scale-110 transition-transform"><Phone size={24} /></div>
                                 </div>
                               </div>
@@ -783,7 +786,7 @@ export default function App() {
                             className={`w-full py-7 rounded-[3rem] text-2xl font-black transition-all flex items-center justify-center gap-4 shadow-2xl relative overflow-hidden group ${
                               isFormValid() 
                                 ? 'bg-blue-600 hover:bg-green-600 text-white shadow-blue-200 scale-[1.02] active:scale-95' 
-                                : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed border-2 border-slate-200 dark:border-slate-700'
+                                : 'bg-slate-100 dark:bg-[#1F2937] text-slate-400 dark:text-slate-600 cursor-not-allowed border-2 border-slate-200 dark:border-slate-700'
                             }`}
                           >
                             <span className="relative z-10">{t.confirmOrder}</span>
