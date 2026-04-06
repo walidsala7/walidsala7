@@ -87,6 +87,7 @@ export default function App() {
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [downloadLink, setDownloadLink] = useState("");
+  const [sn, setSn] = useState("");
 
   const t = translations[lang];
 
@@ -201,6 +202,9 @@ export default function App() {
 
     let message = `🚀 New Order\n🔢 Order ID: ${newOrderId}\n\n📦 Product: ${lang === 'en' && selectedProduct.nameEn ? selectedProduct.nameEn : selectedProduct.name}\n`;
     if (selectedProduct.category === 'credit' || selectedProduct.category === 'server') {
+      if (selectedProduct.requiresSN) {
+        message += `🆔 SN: ${sn}\n`;
+      }
       if (selectedProduct.sizeOptions) {
         message += `📏 Size: ${selectedSize}\n`;
         if (selectedProduct.id === 202) {
@@ -245,6 +249,7 @@ export default function App() {
 
   const isFormValid = () => {
     if (!selectedProduct) return false;
+    if (selectedProduct.requiresSN && !sn.trim()) return false;
     const isRemoteValid = selectedProduct.category !== 'rent' || (remoteTool === 'ultra' ? (ultraId.trim() && ultraPass.trim()) : anyDeskId.trim());
     const isPaymentValid = paymentType === 'vodafone' ? senderPhone.trim().length >= 11 : binanceTx.trim().length > 0;
     if (selectedProduct.category === 'credit' || selectedProduct.category === 'server') {
@@ -331,7 +336,7 @@ export default function App() {
                     <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{t.priceLabel}</p>
                     <p className="text-2xl font-black text-blue-600 leading-none" title={product.tooltip}>{formatPrice(product.priceUsd, false, product.category === 'credit')}</p>
                   </div>
-                  <button onClick={() => { setSelectedProduct(product); setOrderSuccess(false); setQuantity(product.minQty || 1); setSelectedSize(""); setDownloadLink(""); }} className="bg-slate-900 dark:bg-[#1F2937] text-white px-6 py-3 rounded-2xl font-black text-sm hover:bg-blue-600 transition-all active:scale-95">
+                  <button onClick={() => { setSelectedProduct(product); setOrderSuccess(false); setQuantity(product.minQty || 1); setSelectedSize(""); setDownloadLink(product.downloadLink || ""); setSn(""); }} className="bg-slate-900 dark:bg-[#1F2937] text-white px-6 py-3 rounded-2xl font-black text-sm hover:bg-blue-600 transition-all active:scale-95">
                     {t.rentNow}
                   </button>
                 </div>
@@ -608,7 +613,7 @@ export default function App() {
                                 </div>
                               )}
 
-                              {!selectedProduct.sizeOptions && (
+                              {!selectedProduct.sizeOptions && selectedProduct.id !== 203 && (
                                 <div className="space-y-4">
                                   <label className="flex items-center gap-2 text-sm font-black text-slate-700 dark:text-slate-300 ml-2">
                                     <Hash size={16} className="text-blue-500" />
@@ -624,10 +629,31 @@ export default function App() {
                                 </div>
                               )}
 
+                              {selectedProduct.requiresSN && (
+                                <div className="space-y-4">
+                                  <label className="flex items-center gap-2 text-sm font-black text-slate-700 dark:text-slate-300 ml-2">
+                                    <Hash size={16} className="text-blue-500" />
+                                    {t.snLabel}
+                                  </label>
+                                  <div className="relative group">
+                                    <input 
+                                      type="text" 
+                                      value={sn} 
+                                      onChange={(e) => setSn(e.target.value)} 
+                                      placeholder="SN..." 
+                                      className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 font-bold focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 outline-none transition-all bg-white dark:bg-[#1F2937] text-slate-900 dark:text-white shadow-sm"
+                                    />
+                                    <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors">
+                                      <Hash size={20} />
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+
                               <div className="space-y-4">
                                 <label className="flex items-center gap-2 text-sm font-black text-slate-700 dark:text-slate-300 ml-2">
                                   {selectedProduct.category === 'credit' ? <Mail size={16} className="text-blue-500" /> : <Phone size={16} className="text-blue-500" />}
-                                  {selectedProduct.category === 'credit' ? t.emailLabel : (selectedProduct.id === 202 ? (lang === 'ar' ? 'رقم الواتساب (لإرسال الرابط)' : 'WhatsApp Number (to receive link)') : t.whatsappNumberLabel)}
+                                  {selectedProduct.category === 'credit' ? t.emailLabel : (selectedProduct.id === 202 ? (lang === 'ar' ? 'رقم الواتساب (لإرسال الرابط)' : 'WhatsApp Number (to receive link)') : (selectedProduct.id === 203 ? (lang === 'ar' ? 'رقم الواتساب (لارسال الكود الخاص بFRP)' : 'WhatsApp Number (to receive FRP code)') : t.whatsappNumberLabel))}
                                 </label>
                                 <div className="relative group">
                                   <input 

@@ -69,6 +69,16 @@ export const productsData: Product[] = [
         "13GB to 30GB": 7.00
       }
     },
+    { 
+      id: 203, 
+      name: "Honor FRP Key - Google Account Removal", 
+      priceUsd: 32, 
+      image: "https://i.ibb.co/Pvz6s6s0/honor-frp.png", 
+      category: 'server',
+      requiresSN: true,
+      tooltip: "1-30Min Available Slot | Max 1-6 Hrs | Few Time Fast Manually. Note: no cancellation if delayed, no refund for wrong code, no video proof accepted, no investigation, no refund for double imei, no refund for junk or test imei. Huawei ID & HONOR ID Not Supported.",
+      downloadLink: "https://mega.nz/file/LcdwzDjS#o-ep7wL3KG--TejTD0Yu3eYQFLiZH4O1g-s-98T3pNE"
+    },
 ];
 
 export const translations = {
@@ -123,6 +133,7 @@ export const translations = {
         rateLabel: "سعر الصرف",
         quantityLabel: "الكمية",
         emailLabel: "البريد الإلكتروني",
+        snLabel: "ادخل رقم SN",
         helpText: "هل تحتاج مساعدة؟ تواصل معنا عبر واتساب"
     },
     en: {
@@ -176,6 +187,7 @@ export const translations = {
         rateLabel: "Rate",
         quantityLabel: "Quantity",
         emailLabel: "Email",
+        snLabel: "Enter SN",
         helpText: "Need help? Contact us on WhatsApp"
     }
 } as const;

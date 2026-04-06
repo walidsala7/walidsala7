@@ -11,6 +11,8 @@ export interface Product {
   sizeOptions?: string[];
   sizePrices?: { [key: string]: number };
   tooltip?: string;
+  requiresSN?: boolean;
+  downloadLink?: string;
 }
 
 export type Language = 'ar' | 'en';
