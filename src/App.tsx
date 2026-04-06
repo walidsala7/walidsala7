@@ -28,7 +28,9 @@ import {
   ArrowRight,
   ShieldCheck,
   Zap,
-  Info
+  Info,
+  Moon,
+  Sun
 } from 'lucide-react';
 import { 
   TELEGRAM_BOT_TOKEN, 
@@ -61,6 +63,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 export default function App() {
   const [lang, setLang] = useState<Language>("en");
   const [currency, setCurrency] = useState<Currency>("USD");
+  const [isDarkMode, setIsDarkMode] = useState(false);
   
   const [currentCategory, setCurrentCategory] = useState<Product['category']>('rent');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -86,6 +89,15 @@ export default function App() {
   const [downloadLink, setDownloadLink] = useState("");
 
   const t = translations[lang];
+
+  // Dark mode effect
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   // Visitor notification
   useEffect(() => {
@@ -242,30 +254,37 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen pb-20 font-sans" dir={t.dir}>
+    <div className="min-h-screen pb-20 font-sans bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300" dir={t.dir}>
       <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 z-[90] bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform">
         <WhatsAppIcon className="w-8 h-8" />
       </a>
       
-      <nav className="bg-white/90 backdrop-blur-md border-b px-4 py-4 sticky top-0 z-50 shadow-sm">
+      <nav className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b dark:border-slate-800 px-4 py-4 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <span className="text-xl md:text-2xl font-black text-blue-600 tracking-tighter uppercase shrink-0">WALID SALA7</span>
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-            <div className="flex items-center bg-slate-100 p-1 rounded-xl shrink-0">
-              <button onClick={() => setCurrency('USD')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${currency === 'USD' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'}`}>{t.usd}</button>
-              <button onClick={() => setCurrency('EGP')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${currency === 'EGP' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'}`}>{t.egp}</button>
+            <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl shrink-0">
+              <button onClick={() => setCurrency('USD')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${currency === 'USD' ? 'bg-white dark:bg-slate-700 text-blue-600 shadow-sm' : 'text-slate-500'}`}>{t.usd}</button>
+              <button onClick={() => setCurrency('EGP')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${currency === 'EGP' ? 'bg-white dark:bg-slate-700 text-blue-600 shadow-sm' : 'text-slate-500'}`}>{t.egp}</button>
             </div>
-            <div className="flex items-center bg-slate-100 p-1 rounded-xl shrink-0">
-              <button onClick={() => setLang('ar')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${lang === 'ar' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'}`}>العربية</button>
-              <button onClick={() => setLang('en')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${lang === 'en' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'}`}>English</button>
+            <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl shrink-0">
+              <button onClick={() => setLang('ar')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${lang === 'ar' ? 'bg-white dark:bg-slate-700 text-blue-600 shadow-sm' : 'text-slate-500'}`}>العربية</button>
+              <button onClick={() => setLang('en')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${lang === 'en' ? 'bg-white dark:bg-slate-700 text-blue-600 shadow-sm' : 'text-slate-500'}`}>English</button>
             </div>
+            <button 
+              onClick={() => setIsDarkMode(!isDarkMode)} 
+              className="p-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all shadow-sm"
+              title={isDarkMode ? t.lightMode : t.darkMode}
+            >
+              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
           </div>
         </div>
       </nav>
 
       <main className="max-w-7xl mx-auto p-4 md:p-8">
         <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-6xl font-black text-slate-900 mb-4">{t.title}</h1>
+          <h1 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-4">{t.title}</h1>
           <p className="text-blue-600 font-extrabold text-xl md:text-2xl mb-8">{t.subtitle}</p>
           
           <div className="max-w-2xl mx-auto mb-8 relative">
@@ -275,14 +294,14 @@ export default function App() {
               placeholder={t.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full ${t.dir === 'rtl' ? 'pr-12 pl-6' : 'pl-12 pr-6'} py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 outline-none font-bold shadow-sm transition-all`}
+              className={`w-full ${t.dir === 'rtl' ? 'pr-12 pl-6' : 'pl-12 pr-6'} py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 focus:border-blue-500 outline-none font-bold shadow-sm transition-all bg-white dark:bg-slate-900 text-slate-900 dark:text-white`}
             />
           </div>
 
           <div className="flex justify-center gap-4 mb-8 overflow-x-auto no-scrollbar py-2">
-            <button onClick={() => setCurrentCategory('rent')} className={`px-8 py-3 rounded-2xl font-black transition-all whitespace-nowrap ${currentCategory === 'rent' ? 'bg-blue-600 text-white shadow-xl scale-105' : 'bg-white text-slate-600 border'}`}>{t.rentalsTab}</button>
-            <button onClick={() => setCurrentCategory('credit')} className={`px-8 py-3 rounded-2xl font-black transition-all whitespace-nowrap ${currentCategory === 'credit' ? 'bg-blue-600 text-white shadow-xl scale-105' : 'bg-white text-slate-600 border'}`}>{t.creditsTab}</button>
-            <button onClick={() => setCurrentCategory('server')} className={`px-8 py-3 rounded-2xl font-black transition-all whitespace-nowrap ${currentCategory === 'server' ? 'bg-blue-600 text-white shadow-xl scale-105' : 'bg-white text-slate-600 border'}`}>{t.serverTab}</button>
+            <button onClick={() => setCurrentCategory('rent')} className={`px-8 py-3 rounded-2xl font-black transition-all whitespace-nowrap ${currentCategory === 'rent' ? 'bg-blue-600 text-white shadow-xl scale-105' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border dark:border-slate-800'}`}>{t.rentalsTab}</button>
+            <button onClick={() => setCurrentCategory('credit')} className={`px-8 py-3 rounded-2xl font-black transition-all whitespace-nowrap ${currentCategory === 'credit' ? 'bg-blue-600 text-white shadow-xl scale-105' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border dark:border-slate-800'}`}>{t.creditsTab}</button>
+            <button onClick={() => setCurrentCategory('server')} className={`px-8 py-3 rounded-2xl font-black transition-all whitespace-nowrap ${currentCategory === 'server' ? 'bg-blue-600 text-white shadow-xl scale-105' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border dark:border-slate-800'}`}>{t.serverTab}</button>
           </div>
         </div>
 
@@ -291,18 +310,18 @@ export default function App() {
             .filter(p => p.category === currentCategory)
             .filter(p => (lang === 'en' && p.nameEn ? p.nameEn : p.name).toLowerCase().includes(searchQuery.toLowerCase()))
             .map((product) => (
-            <div key={product.id} className="bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all flex flex-col group">
-              <div className="h-36 bg-white flex items-center justify-center relative overflow-hidden">
+            <div key={product.id} className="bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all flex flex-col group">
+              <div className="h-36 bg-white dark:bg-slate-800 flex items-center justify-center relative overflow-hidden">
                 <img src={product.image} alt={lang === 'en' && product.nameEn ? product.nameEn : product.name} className="h-full w-full object-cover transition-transform group-hover:scale-110" referrerPolicy="no-referrer" />
               </div>
               <div className="p-6 flex flex-col flex-grow">
-                <h3 className="font-bold text-slate-800 text-lg mb-4 h-14 line-clamp-2">{lang === 'en' && product.nameEn ? product.nameEn : product.name}</h3>
+                <h3 className="font-bold text-slate-800 dark:text-slate-100 text-lg mb-4 h-14 line-clamp-2">{lang === 'en' && product.nameEn ? product.nameEn : product.name}</h3>
                 <div className="flex justify-between items-center mt-auto">
                   <div>
                     <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{t.priceLabel}</p>
                     <p className="text-2xl font-black text-blue-600 leading-none" title={product.tooltip}>{formatPrice(product.priceUsd, false, product.category === 'credit')}</p>
                   </div>
-                  <button onClick={() => { setSelectedProduct(product); setOrderSuccess(false); setQuantity(product.minQty || 1); setSelectedSize(""); setDownloadLink(""); }} className="bg-slate-900 text-white px-6 py-3 rounded-2xl font-black text-sm hover:bg-blue-600 transition-all active:scale-95">
+                  <button onClick={() => { setSelectedProduct(product); setOrderSuccess(false); setQuantity(product.minQty || 1); setSelectedSize(""); setDownloadLink(""); }} className="bg-slate-900 dark:bg-slate-800 text-white px-6 py-3 rounded-2xl font-black text-sm hover:bg-blue-600 transition-all active:scale-95">
                     {t.rentNow}
                   </button>
                 </div>
@@ -311,30 +330,30 @@ export default function App() {
           ))}
         </div>
 
-        <div className="bg-white rounded-[2.5rem] p-8 md:p-12 border border-slate-100 shadow-sm max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-black text-slate-900 mb-10 flex items-center justify-center gap-4">
+        <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 md:p-12 border border-slate-100 dark:border-slate-800 shadow-sm max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-10 flex items-center justify-center gap-4">
             <Wallet className="text-blue-600" /> {t.paymentTitle}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-6 rounded-3xl bg-rose-50/50 border border-rose-100 flex items-center justify-between group hover:bg-rose-50 transition-colors">
+            <div className="p-6 rounded-3xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900 flex items-center justify-between group hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors">
               <div className="flex items-center gap-4">
-                <div className="p-1 bg-white rounded-2xl shadow-sm text-rose-500 overflow-hidden">
+                <div className="p-1 bg-white dark:bg-slate-800 rounded-2xl shadow-sm text-rose-500 overflow-hidden">
                   <img src={VODAFONE_QR_URL} alt="Vodafone QR" className="w-12 h-12 object-contain" referrerPolicy="no-referrer" />
                 </div>
-                <span className="font-black text-rose-900">{t.vodafone}</span>
+                <span className="font-black text-rose-900 dark:text-rose-100">{t.vodafone}</span>
               </div>
-              <button onClick={() => handleCopy(VODAFONE_NUMBER, 'v1')} className="font-mono font-bold text-sm text-rose-600 bg-white px-4 py-2 rounded-xl border border-rose-100 flex items-center gap-2">
+              <button onClick={() => handleCopy(VODAFONE_NUMBER, 'v1')} className="font-mono font-bold text-sm text-rose-600 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl border border-rose-100 dark:border-rose-900 flex items-center gap-2">
                 {copyStatus === 'v1' ? <CheckCircle2 size={16} /> : <img src={VODAFONE_QR_URL} alt="QR" className="w-4 h-4 object-contain" referrerPolicy="no-referrer" />} {VODAFONE_NUMBER}
               </button>
             </div>
-            <div className="p-6 rounded-3xl bg-amber-50/50 border border-amber-100 flex items-center justify-between group hover:bg-amber-50 transition-colors">
+            <div className="p-6 rounded-3xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900 flex items-center justify-between group hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-colors">
               <div className="flex items-center gap-4">
-                <div className="p-1 bg-white rounded-2xl shadow-sm text-amber-500 overflow-hidden">
+                <div className="p-1 bg-white dark:bg-slate-800 rounded-2xl shadow-sm text-amber-500 overflow-hidden">
                   <img src={BINANCE_QR_URL} alt="Binance QR" className="w-12 h-12 object-contain" referrerPolicy="no-referrer" />
                 </div>
-                <span className="font-black text-amber-900">{t.binance}</span>
+                <span className="font-black text-amber-900 dark:text-amber-100">{t.binance}</span>
               </div>
-              <button onClick={() => handleCopy(BINANCE_ID, 'b1')} className="font-mono font-bold text-sm text-amber-600 bg-white px-4 py-2 rounded-xl border border-amber-100 flex items-center gap-2">
+              <button onClick={() => handleCopy(BINANCE_ID, 'b1')} className="font-mono font-bold text-sm text-amber-600 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl border border-amber-100 dark:border-amber-900 flex items-center gap-2">
                 {copyStatus === 'b1' ? <CheckCircle2 size={16} /> : <img src={BINANCE_QR_URL} alt="QR" className="w-4 h-4 object-contain" referrerPolicy="no-referrer" />} {BINANCE_ID}
               </button>
             </div>
@@ -350,16 +369,16 @@ export default function App() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="bg-white rounded-t-[2.5rem] sm:rounded-[3.5rem] w-full max-w-md max-h-[92vh] overflow-hidden shadow-2xl flex flex-col"
+              className="bg-white dark:bg-slate-900 rounded-t-[2.5rem] sm:rounded-[3.5rem] w-full max-w-md max-h-[92vh] overflow-hidden shadow-2xl flex flex-col"
             >
-              <div className="p-6 sm:p-8 border-b flex justify-between items-center bg-white sticky top-0 z-20">
+              <div className="p-6 sm:p-8 border-b dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-900 sticky top-0 z-20">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-100">
                     <CreditCard className="text-white" size={20} />
                   </div>
-                  <h3 className="font-black text-slate-900 text-xl sm:text-2xl tracking-tight">{t.selectPayment}</h3>
+                  <h3 className="font-black text-slate-900 dark:text-white text-xl sm:text-2xl tracking-tight">{t.selectPayment}</h3>
                 </div>
-                <button onClick={() => setSelectedProduct(null)} className="p-3 hover:bg-slate-100 rounded-2xl transition-all active:scale-90">
+                <button onClick={() => setSelectedProduct(null)} className="p-3 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl transition-all active:scale-90">
                   <X className="text-slate-400" size={24} />
                 </button>
               </div>
@@ -394,14 +413,14 @@ export default function App() {
                             </div>
                           </div>
                           <div className="space-y-3">
-                            <h3 className="font-black text-slate-900 text-3xl tracking-tight">{t.verifying}</h3>
-                            <div className="flex items-center justify-center gap-2 text-blue-600 bg-blue-50 px-4 py-2 rounded-full mx-auto w-fit">
+                            <h3 className="font-black text-slate-900 dark:text-white text-3xl tracking-tight">{t.verifying}</h3>
+                            <div className="flex items-center justify-center gap-2 text-blue-600 bg-blue-50 dark:bg-blue-950/30 px-4 py-2 rounded-full mx-auto w-fit">
                               <ShieldCheck size={16} />
                               <span className="text-[10px] font-black uppercase tracking-wider">Secure Verification</span>
                             </div>
-                            <p className="text-slate-500 font-bold text-sm leading-relaxed max-w-[280px] mx-auto">{t.waitOwner}</p>
+                            <p className="text-slate-500 dark:text-slate-400 font-bold text-sm leading-relaxed max-w-[280px] mx-auto">{t.waitOwner}</p>
                           </div>
-                          <button onClick={() => { setOrderSuccess(false); setSelectedProduct(null); }} className="px-8 py-4 bg-slate-100 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded-3xl font-black text-sm transition-all border-2 border-transparent hover:border-rose-100 w-full">
+                          <button onClick={() => { setOrderSuccess(false); setSelectedProduct(null); }} className="px-8 py-4 bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-slate-400 hover:text-rose-600 rounded-3xl font-black text-sm transition-all border-2 border-transparent hover:border-rose-100 dark:hover:border-rose-900 w-full">
                             {t.cancelProcess}
                           </button>
                         </div>
@@ -411,8 +430,8 @@ export default function App() {
                             <Check size={64} strokeWidth={3} />
                           </div>
                           <div className="space-y-2">
-                            <h3 className="font-black text-slate-900 text-3xl tracking-tight">{t.accepted}</h3>
-                            <p className="text-slate-500 font-bold text-sm">{t.acceptedMsg}</p>
+                            <h3 className="font-black text-slate-900 dark:text-white text-3xl tracking-tight">{t.accepted}</h3>
+                            <p className="text-slate-500 dark:text-slate-400 font-bold text-sm">{t.acceptedMsg}</p>
                           </div>
                           <button onClick={() => setSelectedProduct(null)} className="bg-green-600 hover:bg-green-700 text-white px-10 py-5 rounded-[2rem] font-black text-lg w-full shadow-2xl shadow-green-200 transition-all active:scale-95">
                             {t.close}
@@ -424,10 +443,10 @@ export default function App() {
                             <X size={64} strokeWidth={3} />
                           </div>
                           <div className="space-y-2">
-                            <h3 className="font-black text-slate-900 text-3xl tracking-tight">{t.rejected}</h3>
-                            <p className="text-slate-500 font-bold text-sm">{t.rejectedMsg}</p>
+                            <h3 className="font-black text-slate-900 dark:text-white text-3xl tracking-tight">{t.rejected}</h3>
+                            <p className="text-slate-500 dark:text-slate-400 font-bold text-sm">{t.rejectedMsg}</p>
                           </div>
-                          <button onClick={() => setOrderSuccess(false)} className="px-10 py-5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-[2rem] font-black w-full transition-all">
+                          <button onClick={() => setOrderSuccess(false)} className="px-10 py-5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-[2rem] font-black w-full transition-all">
                             {t.backToStore}
                           </button>
                         </div>
@@ -439,12 +458,12 @@ export default function App() {
                       <section className="relative">
                         <div className="flex items-center gap-3 mb-5">
                           <div className="w-8 h-8 bg-blue-600 text-white rounded-xl flex items-center justify-center font-black text-sm shadow-lg shadow-blue-100">1</div>
-                          <h3 className="font-black text-slate-800 uppercase tracking-widest text-[11px]">{lang === 'ar' ? 'تفاصيل الطلب' : 'Order Details'}</h3>
+                          <h3 className="font-black text-slate-800 dark:text-slate-200 uppercase tracking-widest text-[11px]">{lang === 'ar' ? 'تفاصيل الطلب' : 'Order Details'}</h3>
                         </div>
                         
-                        <div className="bg-slate-50 rounded-[2.5rem] p-6 border-2 border-white shadow-sm space-y-6">
+                        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-[2.5rem] p-6 border-2 border-white dark:border-slate-800 shadow-sm space-y-6">
                           <div className="flex items-center gap-5">
-                            <div className="w-24 h-24 bg-white rounded-3xl overflow-hidden border-2 border-white shadow-sm shrink-0 p-1">
+                            <div className="w-24 h-24 bg-white dark:bg-slate-700 rounded-3xl overflow-hidden border-2 border-white dark:border-slate-800 shadow-sm shrink-0 p-1">
                               <img src={selectedProduct.image} alt={lang === 'en' && selectedProduct.nameEn ? selectedProduct.nameEn : selectedProduct.name} className="w-full h-full object-cover rounded-2xl" referrerPolicy="no-referrer" />
                             </div>
                             <div className="flex-grow">
@@ -452,9 +471,9 @@ export default function App() {
                                 <Zap size={10} className="text-blue-500 fill-blue-500" />
                                 <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest">{t.productLabel}</span>
                               </div>
-                              <h4 className="font-black text-slate-900 text-xl leading-tight mb-2">{lang === 'en' && selectedProduct.nameEn ? selectedProduct.nameEn : selectedProduct.name}</h4>
+                              <h4 className="font-black text-slate-900 dark:text-white text-xl leading-tight mb-2">{lang === 'en' && selectedProduct.nameEn ? selectedProduct.nameEn : selectedProduct.name}</h4>
                               {selectedProduct.duration && (
-                                <div className="flex items-center gap-1.5 text-blue-600 bg-blue-100/50 px-3 py-1 rounded-full w-fit">
+                                <div className="flex items-center gap-1.5 text-blue-600 bg-blue-100/50 dark:bg-blue-900/30 px-3 py-1 rounded-full w-fit">
                                   <Clock size={12} />
                                   <span className="text-[10px] font-black uppercase tracking-wider">{selectedProduct.duration}</span>
                                 </div>
@@ -462,7 +481,7 @@ export default function App() {
                             </div>
                           </div>
 
-                          <div className="grid grid-cols-2 gap-4 pt-6 border-t-2 border-white border-dashed">
+                          <div className="grid grid-cols-2 gap-4 pt-6 border-t-2 border-white dark:border-slate-800 border-dashed">
                             <div className="space-y-1">
                               <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">{t.priceLabel}</span>
                               <p className="text-2xl font-black text-blue-600 tracking-tighter">
@@ -477,7 +496,7 @@ export default function App() {
                             </div>
                             <div className="space-y-1 text-right">
                               <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">{t.totalUsd}</span>
-                              <p className="text-2xl font-black text-slate-900 tracking-tighter">
+                              <p className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter">
                                 $ {(
                                   ((selectedProduct.sizeOptions && selectedSize && selectedProduct.sizePrices?.[selectedSize]) 
                                     ? selectedProduct.sizePrices[selectedSize] 
@@ -493,15 +512,15 @@ export default function App() {
                       <section>
                         <div className="flex items-center gap-3 mb-5">
                           <div className="w-8 h-8 bg-blue-600 text-white rounded-xl flex items-center justify-center font-black text-sm shadow-lg shadow-blue-100">2</div>
-                          <h3 className="font-black text-slate-800 uppercase tracking-widest text-[11px]">{lang === 'ar' ? 'تكوين الخدمة' : 'Service Configuration'}</h3>
+                          <h3 className="font-black text-slate-800 dark:text-slate-200 uppercase tracking-widest text-[11px]">{lang === 'ar' ? 'تكوين الخدمة' : 'Service Configuration'}</h3>
                         </div>
 
-                        <div className="bg-slate-50 rounded-[2.5rem] p-6 space-y-6 border-2 border-white shadow-sm">
+                        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-[2.5rem] p-6 space-y-6 border-2 border-white dark:border-slate-800 shadow-sm">
                           {(selectedProduct.category === 'credit' || selectedProduct.category === 'server') && (
                             <div className="space-y-6">
                               {selectedProduct.sizeOptions && (
                                 <div className="space-y-4">
-                                  <label className="flex items-center gap-2 text-sm font-black text-slate-700 ml-2">
+                                  <label className="flex items-center gap-2 text-sm font-black text-slate-700 dark:text-slate-300 ml-2">
                                     <Hash size={16} className="text-blue-500" />
                                     {lang === 'ar' ? 'اختر الحجم:' : 'Select Size:'}
                                   </label>
@@ -513,7 +532,7 @@ export default function App() {
                                         className={`py-4 px-3 rounded-2xl text-xs font-black transition-all border-2 flex flex-col items-center gap-1 ${
                                           selectedSize === option 
                                             ? 'bg-blue-600 border-blue-600 text-white shadow-xl shadow-blue-100 scale-[1.02]' 
-                                            : 'bg-white border-slate-100 text-slate-600 hover:border-blue-300'
+                                            : 'bg-white dark:bg-slate-700 border-slate-100 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-blue-300'
                                         }`}
                                       >
                                         <span>{option}</span>
@@ -530,25 +549,25 @@ export default function App() {
                                   {selectedProduct.id === 202 && (
                                     <div className="space-y-2">
                                       {["5GB to 9GB", "9GB to 13GB", "13GB to 30GB"].includes(selectedSize || "") && (
-                                        <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="p-4 bg-amber-50 border-2 border-amber-100 rounded-2xl flex items-center gap-3">
+                                        <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="p-4 bg-amber-50 dark:bg-amber-950/20 border-2 border-amber-100 dark:border-amber-900 rounded-2xl flex items-center gap-3">
                                           <Clock className="text-amber-600 w-5 h-5 shrink-0" />
-                                          <p className="text-xs font-black text-amber-800 leading-tight">
+                                          <p className="text-xs font-black text-amber-800 dark:text-amber-200 leading-tight">
                                             {lang === 'ar' ? 'انتظار لمدة 3-6 ساعات' : 'Wait for 3-6 Hours'}
                                           </p>
                                         </motion.div>
                                       )}
                                       {selectedSize === "1MB to 1GB" && (
-                                        <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="p-4 bg-green-50 border-2 border-green-100 rounded-2xl flex items-center gap-3">
+                                        <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="p-4 bg-green-50 dark:bg-green-950/20 border-2 border-green-100 dark:border-green-900 rounded-2xl flex items-center gap-3">
                                           <Clock className="text-green-600 w-5 h-5 shrink-0" />
-                                          <p className="text-xs font-black text-green-800 leading-tight">
+                                          <p className="text-xs font-black text-green-800 dark:text-green-200 leading-tight">
                                             {lang === 'ar' ? 'انتظار لمدة 1-30 دقيقة' : 'Wait for 1-30 Minute'}
                                           </p>
                                         </motion.div>
                                       )}
                                       {["2GB to 3GB", "3GB to 4GB"].includes(selectedSize || "") && (
-                                        <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="p-4 bg-blue-50 border-2 border-blue-100 rounded-2xl flex items-center gap-3">
+                                        <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="p-4 bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-100 dark:border-blue-900 rounded-2xl flex items-center gap-3">
                                           <Clock className="text-blue-600 w-5 h-5 shrink-0" />
-                                          <p className="text-xs font-black text-blue-800 leading-tight">
+                                          <p className="text-xs font-black text-blue-800 dark:text-blue-200 leading-tight">
                                             {lang === 'ar' ? 'انتظار لمدة 1-3 ساعات' : 'Wait for 1-3 Hour'}
                                           </p>
                                         </motion.div>
@@ -557,7 +576,7 @@ export default function App() {
                                   )}
 
                                   <div className="pt-2">
-                                    <label className="flex items-center gap-2 text-sm font-black text-slate-700 mb-3 ml-2">
+                                    <label className="flex items-center gap-2 text-sm font-black text-slate-700 dark:text-slate-300 mb-3 ml-2">
                                       <Link size={16} className="text-blue-500" />
                                       {lang === 'ar' ? 'رابط الملف الخاص بك:' : 'Your file link:'}
                                     </label>
@@ -567,7 +586,7 @@ export default function App() {
                                         value={downloadLink} 
                                         onChange={(e) => setDownloadLink(e.target.value)} 
                                         placeholder="https://halabtech.com/..." 
-                                        className="w-full pl-6 pr-12 py-5 rounded-3xl border-2 border-white font-bold focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 outline-none transition-all bg-white shadow-sm"
+                                        className="w-full pl-6 pr-12 py-5 rounded-3xl border-2 border-white dark:border-slate-800 font-bold focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 outline-none transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
                                       />
                                       <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors">
                                         <Link size={20} />
@@ -579,12 +598,12 @@ export default function App() {
 
                               {!selectedProduct.sizeOptions && (
                                 <div className="space-y-4">
-                                  <label className="flex items-center gap-2 text-sm font-black text-slate-700 ml-2">
+                                  <label className="flex items-center gap-2 text-sm font-black text-slate-700 dark:text-slate-300 ml-2">
                                     <Hash size={16} className="text-blue-500" />
                                     {t.quantityLabel}
                                   </label>
                                   <div className="relative">
-                                    <input type="number" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value) || 0)} className="w-full px-6 py-5 rounded-3xl border-2 border-white font-black text-center text-2xl focus:border-blue-500 bg-white outline-none shadow-sm" />
+                                    <input type="number" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value) || 0)} className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 font-black text-center text-2xl focus:border-blue-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white outline-none shadow-sm" />
                                     <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300">
                                       <span className="text-[10px] font-black uppercase tracking-widest">Qty</span>
                                     </div>
@@ -594,7 +613,7 @@ export default function App() {
                               )}
 
                               <div className="space-y-4">
-                                <label className="flex items-center gap-2 text-sm font-black text-slate-700 ml-2">
+                                <label className="flex items-center gap-2 text-sm font-black text-slate-700 dark:text-slate-300 ml-2">
                                   {selectedProduct.category === 'credit' ? <Mail size={16} className="text-blue-500" /> : <Phone size={16} className="text-blue-500" />}
                                   {selectedProduct.category === 'credit' ? t.emailLabel : (selectedProduct.id === 202 ? (lang === 'ar' ? 'رقم الواتساب (لإرسال الرابط)' : 'WhatsApp Number (to receive link)') : t.whatsappNumberLabel)}
                                 </label>
@@ -604,7 +623,7 @@ export default function App() {
                                     value={selectedProduct.category === 'credit' ? email : whatsappNumber} 
                                     onChange={(e) => selectedProduct.category === 'credit' ? setEmail(e.target.value) : setWhatsappNumber(e.target.value)} 
                                     placeholder={selectedProduct.category === 'credit' ? "example@mail.com" : t.whatsappNumberPlaceholder} 
-                                    className="w-full px-6 py-5 rounded-3xl border-2 border-white font-bold focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 outline-none transition-all bg-white shadow-sm"
+                                    className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 font-bold focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 outline-none transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
                                   />
                                   <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors">
                                     {selectedProduct.category === 'credit' ? <Mail size={20} /> : <WhatsAppIcon className="w-5 h-5" />}
@@ -616,16 +635,16 @@ export default function App() {
 
                           {selectedProduct.category === 'rent' && (
                             <div className="space-y-6">
-                              <label className="flex items-center gap-2 text-sm font-black text-slate-700 ml-2">
+                              <label className="flex items-center gap-2 text-sm font-black text-slate-700 dark:text-slate-300 ml-2">
                                 <Monitor size={16} className="text-blue-500" />
                                 {t.remoteMethod}
                               </label>
                               <div className="grid grid-cols-2 gap-4">
-                                <button onClick={() => setRemoteTool('ultra')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${remoteTool === 'ultra' ? 'border-blue-500 bg-blue-600 text-white shadow-xl shadow-blue-100 scale-[1.02]' : 'border-white bg-white text-slate-400 hover:border-blue-200'}`}>
+                                <button onClick={() => setRemoteTool('ultra')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${remoteTool === 'ultra' ? 'border-blue-500 bg-blue-600 text-white shadow-xl shadow-blue-100 scale-[1.02]' : 'border-white dark:border-slate-800 bg-white dark:bg-slate-700 text-slate-400 hover:border-blue-200'}`}>
                                   <Monitor className={remoteTool === 'ultra' ? 'text-white' : 'text-slate-400'} size={32} />
                                   <span className="text-[10px] font-black uppercase tracking-widest">UltraViewer</span>
                                 </button>
-                                <button onClick={() => setRemoteTool('anydesk')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${remoteTool === 'anydesk' ? 'border-red-500 bg-red-600 text-white shadow-xl shadow-red-100 scale-[1.02]' : 'border-white bg-white text-slate-400 hover:border-red-200'}`}>
+                                <button onClick={() => setRemoteTool('anydesk')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${remoteTool === 'anydesk' ? 'border-red-500 bg-red-600 text-white shadow-xl shadow-red-100 scale-[1.02]' : 'border-white dark:border-slate-800 bg-white dark:bg-slate-700 text-slate-400 hover:border-red-200'}`}>
                                   <Laptop className={remoteTool === 'anydesk' ? 'text-white' : 'text-slate-400'} size={32} />
                                   <span className="text-[10px] font-black uppercase tracking-widest">AnyDesk</span>
                                 </button>
@@ -635,17 +654,17 @@ export default function App() {
                                 {remoteTool === 'ultra' ? (
                                   <div className="grid grid-cols-1 gap-4">
                                     <div className="relative group">
-                                      <input type="text" placeholder={t.ultraId} value={ultraId} onChange={(e) => setUltraId(e.target.value)} className="w-full px-6 py-5 rounded-3xl border-2 border-white text-center font-mono font-black text-xl focus:border-blue-500 bg-white outline-none shadow-sm" />
+                                      <input type="text" placeholder={t.ultraId} value={ultraId} onChange={(e) => setUltraId(e.target.value)} className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 text-center font-mono font-black text-xl focus:border-blue-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white outline-none shadow-sm" />
                                       <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors"><Hash size={20} /></div>
                                     </div>
                                     <div className="relative group">
-                                      <input type="text" placeholder={t.ultraPass} value={ultraPass} onChange={(e) => setUltraPass(e.target.value)} className="w-full px-6 py-5 rounded-3xl border-2 border-white text-center font-mono font-black text-xl focus:border-blue-500 bg-white outline-none shadow-sm" />
+                                      <input type="text" placeholder={t.ultraPass} value={ultraPass} onChange={(e) => setUltraPass(e.target.value)} className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 text-center font-mono font-black text-xl focus:border-blue-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white outline-none shadow-sm" />
                                       <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors"><ShieldCheck size={20} /></div>
                                     </div>
                                   </div>
                                 ) : (
                                   <div className="relative group">
-                                    <input type="text" placeholder={t.anyDeskId} value={anyDeskId} onChange={(e) => setAnyDeskId(e.target.value)} className="w-full px-6 py-5 rounded-3xl border-2 border-white text-center font-mono font-black text-xl focus:border-red-500 bg-white outline-none shadow-sm" />
+                                    <input type="text" placeholder={t.anyDeskId} value={anyDeskId} onChange={(e) => setAnyDeskId(e.target.value)} className="w-full px-6 py-5 rounded-3xl border-2 border-white dark:border-slate-800 text-center font-mono font-black text-xl focus:border-red-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white outline-none shadow-sm" />
                                     <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-red-500 transition-colors"><Hash size={20} /></div>
                                   </div>
                                 )}
@@ -664,17 +683,17 @@ export default function App() {
 
                         <div className="space-y-8">
                           <div className="grid grid-cols-2 gap-4">
-                            <button onClick={() => setPaymentType('vodafone')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${paymentType === 'vodafone' ? 'border-rose-500 bg-rose-600 text-white shadow-xl shadow-rose-100 scale-[1.02]' : 'border-slate-100 bg-white text-slate-400 hover:border-rose-200'}`}>
+                            <button onClick={() => setPaymentType('vodafone')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${paymentType === 'vodafone' ? 'border-rose-500 bg-rose-600 text-white shadow-xl shadow-rose-100 scale-[1.02]' : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-700 text-slate-400 hover:border-rose-200'}`}>
                               {paymentType === 'vodafone' ? (
-                                <div className="bg-white p-2 rounded-2xl shadow-sm"><img src={VODAFONE_QR_URL} alt="V" className="w-10 h-10 object-contain" referrerPolicy="no-referrer" /></div>
+                                <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm"><img src={VODAFONE_QR_URL} alt="V" className="w-10 h-10 object-contain" referrerPolicy="no-referrer" /></div>
                               ) : (
                                 <Smartphone size={32} />
                               )}
                               <span className="text-[10px] font-black uppercase tracking-widest">{t.vodafone}</span>
                             </button>
-                            <button onClick={() => setPaymentType('binance')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${paymentType === 'binance' ? 'border-amber-500 bg-amber-600 text-white shadow-xl shadow-amber-100 scale-[1.02]' : 'border-slate-100 bg-white text-slate-400 hover:border-amber-200'}`}>
+                            <button onClick={() => setPaymentType('binance')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${paymentType === 'binance' ? 'border-amber-500 bg-amber-600 text-white shadow-xl shadow-amber-100 scale-[1.02]' : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-700 text-slate-400 hover:border-amber-200'}`}>
                               {paymentType === 'binance' ? (
-                                <div className="bg-white p-2 rounded-2xl shadow-sm"><img src={BINANCE_QR_URL} alt="B" className="w-10 h-10 object-contain" referrerPolicy="no-referrer" /></div>
+                                <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm"><img src={BINANCE_QR_URL} alt="B" className="w-10 h-10 object-contain" referrerPolicy="no-referrer" /></div>
                               ) : (
                                 <QrCode size={32} />
                               )}
@@ -685,55 +704,55 @@ export default function App() {
                           <motion.div layout className="relative">
                             {paymentType === 'binance' ? (
                               <div className="space-y-6">
-                                <div className="p-8 bg-amber-50 rounded-[3.5rem] border-2 border-amber-100 shadow-inner relative overflow-hidden group">
+                                <div className="p-8 bg-amber-50 dark:bg-amber-950/20 rounded-[3.5rem] border-2 border-amber-100 dark:border-amber-900 shadow-inner relative overflow-hidden group">
                                   <div className="absolute -right-10 -top-10 w-48 h-48 bg-amber-200/30 rounded-full blur-3xl group-hover:scale-110 transition-all duration-700"></div>
                                   <div className="text-center relative z-10">
-                                    <span className="text-[10px] text-amber-700 font-black uppercase tracking-[0.4em] mb-6 block">{t.binanceIdLabel}</span>
+                                    <span className="text-[10px] text-amber-700 dark:text-amber-400 font-black uppercase tracking-[0.4em] mb-6 block">{t.binanceIdLabel}</span>
                                     <div className="flex flex-col items-center gap-6">
-                                      <span className="text-5xl font-black text-amber-950 font-mono tracking-tighter">{BINANCE_ID}</span>
-                                      <button onClick={() => handleCopy(BINANCE_ID, 'm_b')} className="flex items-center gap-3 bg-white px-8 py-4 rounded-3xl shadow-xl border border-amber-100 hover:scale-105 transition-all active:scale-95 group/btn">
+                                      <span className="text-5xl font-black text-amber-950 dark:text-amber-100 font-mono tracking-tighter">{BINANCE_ID}</span>
+                                      <button onClick={() => handleCopy(BINANCE_ID, 'm_b')} className="flex items-center gap-3 bg-white dark:bg-slate-800 px-8 py-4 rounded-3xl shadow-xl border border-amber-100 dark:border-amber-900 hover:scale-105 transition-all active:scale-95 group/btn">
                                         {copyStatus === 'm_b' ? (
                                           <><CheckCircle2 className="text-green-500" size={24} /><span className="text-sm font-black text-green-600 uppercase tracking-wider">{t.copied}</span></>
                                         ) : (
-                                          <><img src={BINANCE_QR_URL} alt="B" className="w-6 h-6 object-contain group-hover/btn:rotate-12 transition-transform" referrerPolicy="no-referrer" /><span className="text-sm font-black text-amber-800 uppercase tracking-wider">{t.copy} ID</span></>
+                                          <><img src={BINANCE_QR_URL} alt="B" className="w-6 h-6 object-contain group-hover/btn:rotate-12 transition-transform" referrerPolicy="no-referrer" /><span className="text-sm font-black text-amber-800 dark:text-amber-200 uppercase tracking-wider">{t.copy} ID</span></>
                                         )}
                                       </button>
                                     </div>
                                   </div>
-                                  <div className="mt-10 bg-white/70 backdrop-blur-md p-5 rounded-3xl border border-amber-100 flex items-start gap-3">
+                                  <div className="mt-10 bg-white/70 dark:bg-slate-800/70 backdrop-blur-md p-5 rounded-3xl border border-amber-100 dark:border-amber-900 flex items-start gap-3">
                                     <Info className="text-amber-600 shrink-0" size={16} />
-                                    <p className="text-[11px] text-amber-900 font-bold leading-relaxed">{t.instructionBinance}</p>
+                                    <p className="text-[11px] text-amber-900 dark:text-amber-100 font-bold leading-relaxed">{t.instructionBinance}</p>
                                   </div>
                                 </div>
                                 <div className="relative group">
-                                  <input type="text" placeholder={t.binanceTxPlaceholder} value={binanceTx} onChange={(e) => setBinanceTx(e.target.value)} className="w-full px-8 py-6 rounded-[2.5rem] border-2 border-slate-100 text-center font-black text-xl focus:border-amber-500 bg-white outline-none transition-all placeholder:text-slate-300 shadow-sm" />
+                                  <input type="text" placeholder={t.binanceTxPlaceholder} value={binanceTx} onChange={(e) => setBinanceTx(e.target.value)} className="w-full px-8 py-6 rounded-[2.5rem] border-2 border-slate-100 dark:border-slate-800 text-center font-black text-xl focus:border-amber-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-300 shadow-sm" />
                                   <div className="absolute left-8 top-1/2 -translate-y-1/2 text-amber-500 group-focus-within:scale-110 transition-transform"><Hash size={24} /></div>
                                 </div>
                               </div>
                             ) : (
                               <div className="space-y-6">
-                                <div className="p-8 bg-rose-50 rounded-[3.5rem] border-2 border-rose-100 shadow-inner relative overflow-hidden group">
+                                <div className="p-8 bg-rose-50 dark:bg-rose-950/20 rounded-[3.5rem] border-2 border-rose-100 dark:border-rose-900 shadow-inner relative overflow-hidden group">
                                   <div className="absolute -right-10 -top-10 w-48 h-48 bg-rose-200/30 rounded-full blur-3xl group-hover:scale-110 transition-all duration-700"></div>
                                   <div className="text-center relative z-10">
-                                    <span className="text-[10px] text-rose-700 font-black uppercase tracking-[0.4em] mb-6 block">{t.vodafoneNumberLabel}</span>
+                                    <span className="text-[10px] text-rose-700 dark:text-rose-400 font-black uppercase tracking-[0.4em] mb-6 block">{t.vodafoneNumberLabel}</span>
                                     <div className="flex flex-col items-center gap-6">
-                                      <span className="text-5xl font-black text-rose-950 font-mono tracking-tighter">{VODAFONE_NUMBER}</span>
-                                      <button onClick={() => handleCopy(VODAFONE_NUMBER, 'm_v')} className="flex items-center gap-3 bg-white px-8 py-4 rounded-3xl shadow-xl border border-rose-100 hover:scale-105 transition-all active:scale-95 group/btn">
+                                      <span className="text-5xl font-black text-rose-950 dark:text-rose-100 font-mono tracking-tighter">{VODAFONE_NUMBER}</span>
+                                      <button onClick={() => handleCopy(VODAFONE_NUMBER, 'm_v')} className="flex items-center gap-3 bg-white dark:bg-slate-800 px-8 py-4 rounded-3xl shadow-xl border border-rose-100 dark:border-rose-900 hover:scale-105 transition-all active:scale-95 group/btn">
                                         {copyStatus === 'm_v' ? (
                                           <><CheckCircle2 className="text-green-500" size={24} /><span className="text-sm font-black text-green-600 uppercase tracking-wider">{t.copied}</span></>
                                         ) : (
-                                          <><img src={VODAFONE_QR_URL} alt="V" className="w-6 h-6 object-contain group-hover/btn:rotate-12 transition-transform" referrerPolicy="no-referrer" /><span className="text-sm font-black text-rose-800 uppercase tracking-wider">{t.copy} Number</span></>
+                                          <><img src={VODAFONE_QR_URL} alt="V" className="w-6 h-6 object-contain group-hover/btn:rotate-12 transition-transform" referrerPolicy="no-referrer" /><span className="text-sm font-black text-rose-800 dark:text-rose-200 uppercase tracking-wider">{t.copy} Number</span></>
                                         )}
                                       </button>
                                     </div>
                                   </div>
-                                  <div className="mt-10 bg-white/70 backdrop-blur-md p-5 rounded-3xl border border-rose-100 flex items-start gap-3">
+                                  <div className="mt-10 bg-white/70 dark:bg-slate-800/70 backdrop-blur-md p-5 rounded-3xl border border-rose-100 dark:border-rose-900 flex items-start gap-3">
                                     <Info className="text-rose-600 shrink-0" size={16} />
-                                    <p className="text-[11px] text-rose-900 font-bold leading-relaxed">{t.instructionVodafone}</p>
+                                    <p className="text-[11px] text-rose-900 dark:text-rose-100 font-bold leading-relaxed">{t.instructionVodafone}</p>
                                   </div>
                                 </div>
                                 <div className="relative group">
-                                  <input type="text" placeholder={t.senderPhonePlaceholder} value={senderPhone} onChange={(e) => setSenderPhone(e.target.value)} className="w-full px-8 py-6 rounded-[2.5rem] border-2 border-slate-100 text-center font-black text-xl focus:border-rose-500 bg-white outline-none transition-all placeholder:text-slate-300 shadow-sm" />
+                                  <input type="text" placeholder={t.senderPhonePlaceholder} value={senderPhone} onChange={(e) => setSenderPhone(e.target.value)} className="w-full px-8 py-6 rounded-[2.5rem] border-2 border-slate-100 dark:border-slate-800 text-center font-black text-xl focus:border-rose-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-300 shadow-sm" />
                                   <div className="absolute left-8 top-1/2 -translate-y-1/2 text-rose-500 group-focus-within:scale-110 transition-transform"><Phone size={24} /></div>
                                 </div>
                               </div>
@@ -744,15 +763,15 @@ export default function App() {
 
                       {/* Footer Alerts & Action */}
                       <div className="space-y-8 pt-4 pb-6">
-                        <div className="bg-amber-50 border-2 border-amber-100 p-6 rounded-[2.5rem] flex items-start gap-4 shadow-sm">
-                          <div className="w-12 h-12 bg-amber-100 rounded-2xl flex items-center justify-center shrink-0 shadow-inner">
+                        <div className="bg-amber-50 dark:bg-amber-950/20 border-2 border-amber-100 dark:border-amber-900 p-6 rounded-[2.5rem] flex items-start gap-4 shadow-sm">
+                          <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/50 rounded-2xl flex items-center justify-center shrink-0 shadow-inner">
                             <AlertTriangle className="text-amber-600" size={24} />
                           </div>
-                          <p className="text-amber-900 font-bold text-xs leading-relaxed">{t.preOrderAlert}</p>
+                          <p className="text-amber-900 dark:text-amber-100 font-bold text-xs leading-relaxed">{t.preOrderAlert}</p>
                         </div>
 
                         <div className="flex flex-col items-center gap-6">
-                          <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 font-black text-xs uppercase tracking-widest hover:text-blue-700 transition-all group py-2">
+                          <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-black text-xs uppercase tracking-widest hover:text-blue-700 dark:hover:text-blue-300 transition-all group py-2">
                             <WhatsAppIcon className="w-6 h-6 group-hover:rotate-12 transition-transform" />
                             {t.helpText}
                             <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
@@ -764,7 +783,7 @@ export default function App() {
                             className={`w-full py-7 rounded-[3rem] text-2xl font-black transition-all flex items-center justify-center gap-4 shadow-2xl relative overflow-hidden group ${
                               isFormValid() 
                                 ? 'bg-blue-600 hover:bg-green-600 text-white shadow-blue-200 scale-[1.02] active:scale-95' 
-                                : 'bg-slate-100 text-slate-400 cursor-not-allowed border-2 border-slate-200'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed border-2 border-slate-200 dark:border-slate-700'
                             }`}
                           >
                             <span className="relative z-10">{t.confirmOrder}</span>
@@ -789,7 +808,7 @@ export default function App() {
       </AnimatePresence>
 
       <footer className="text-center py-16 px-4">
-        <p className="text-slate-400 text-[10px] font-black tracking-[0.3em] uppercase">
+        <p className="text-slate-400 dark:text-slate-500 text-[10px] font-black tracking-[0.3em] uppercase">
           Walid Sala7 &copy; {new Date().getFullYear()} - {t.rights}
         </p>
       </footer>
