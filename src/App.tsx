@@ -41,6 +41,8 @@ import {
   VODAFONE_QR_URL, 
   BINANCE_ID, 
   BINANCE_QR_URL, 
+  INSTAPAY_NUMBER,
+  INSTAPAY_LOGO_URL,
   WHATSAPP_LINK, 
   productsData, 
   translations 
@@ -228,7 +230,8 @@ export default function App() {
       else message += `🖥️ Tool: AnyDesk\n🆔 ID: ${anyDeskId}\n`;
     }
     if (paymentType === 'vodafone') message += `📱 Method: Vodafone Cash\n📞 From: ${senderPhone}\n`;
-    else message += `🔶 Method: Binance\n🧾 ID: ${binanceTx}\n`;
+    else if (paymentType === 'binance') message += `🔶 Method: Binance\n🧾 ID: ${binanceTx}\n`;
+    else if (paymentType === 'instapay') message += `💸 Method: InstaPay\n📞 From: ${senderPhone}\n`;
     
     try {
       await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -254,7 +257,11 @@ export default function App() {
     if (!selectedProduct) return false;
     if (selectedProduct.requiresSN && !sn.trim()) return false;
     const isRemoteValid = selectedProduct.category !== 'rent' || (remoteTool === 'ultra' ? (ultraId.trim() && ultraPass.trim()) : anyDeskId.trim());
-    const isPaymentValid = paymentType === 'vodafone' ? senderPhone.trim().length >= 11 : binanceTx.trim().length > 0;
+    const isPaymentValid = paymentType === 'vodafone' 
+      ? senderPhone.trim().length >= 11 
+      : paymentType === 'instapay' 
+        ? senderPhone.trim().length >= 11 
+        : binanceTx.trim().length > 0;
     if (selectedProduct.category === 'credit' || selectedProduct.category === 'server') {
       const isContactValid = selectedProduct.category === 'credit' ? email.trim().includes('@') : whatsappNumber.trim().length >= 11;
       if (selectedProduct.sizeOptions) {
@@ -352,7 +359,7 @@ export default function App() {
           <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-10 flex items-center justify-center gap-4">
             <Wallet className="text-blue-600" /> {t.paymentTitle}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="p-6 rounded-3xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900 flex items-center justify-between group hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors">
               <div className="flex items-center gap-4">
                 <div className="p-1 bg-white dark:bg-[#1F2937] rounded-2xl shadow-sm text-rose-500 overflow-hidden">
@@ -362,6 +369,17 @@ export default function App() {
               </div>
               <button onClick={() => handleCopy(VODAFONE_NUMBER, 'v1')} className="font-mono font-bold text-sm text-rose-600 bg-white dark:bg-[#1F2937] px-4 py-2 rounded-xl border border-rose-100 dark:border-rose-900 flex items-center gap-2">
                 {copyStatus === 'v1' ? <CheckCircle2 size={16} /> : <img src={VODAFONE_QR_URL} alt="QR" className="w-4 h-4 object-contain" referrerPolicy="no-referrer" />} {VODAFONE_NUMBER}
+              </button>
+            </div>
+            <div className="p-6 rounded-3xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900 flex items-center justify-between group hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors">
+              <div className="flex items-center gap-4">
+                <div className="p-1 bg-white dark:bg-[#1F2937] rounded-2xl shadow-sm text-blue-500 overflow-hidden">
+                  <img src={INSTAPAY_LOGO_URL} alt="InstaPay Logo" className="w-12 h-12 object-contain" referrerPolicy="no-referrer" />
+                </div>
+                <span className="font-black text-blue-900 dark:text-blue-100">{t.instapay}</span>
+              </div>
+              <button onClick={() => handleCopy(INSTAPAY_NUMBER, 'i1')} className="font-mono font-bold text-sm text-blue-600 bg-white dark:bg-[#1F2937] px-4 py-2 rounded-xl border border-blue-100 dark:border-blue-900 flex items-center gap-2">
+                {copyStatus === 'i1' ? <CheckCircle2 size={16} /> : <img src={INSTAPAY_LOGO_URL} alt="QR" className="w-4 h-4 object-contain" referrerPolicy="no-referrer" />} {INSTAPAY_NUMBER}
               </button>
             </div>
             <div className="p-6 rounded-3xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900 flex items-center justify-between group hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-colors">
@@ -733,7 +751,7 @@ export default function App() {
                         </div>
 
                         <div className="space-y-8">
-                          <div className="grid grid-cols-2 gap-4">
+                          <div className="grid grid-cols-3 gap-4">
                             <button onClick={() => setPaymentType('vodafone')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${paymentType === 'vodafone' ? 'border-rose-500 bg-rose-600 text-white shadow-xl shadow-rose-100 scale-[1.02]' : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-[#1F2937] text-slate-400 hover:border-rose-200'}`}>
                               {paymentType === 'vodafone' ? (
                                 <div className="bg-white dark:bg-[#1F2937] p-2 rounded-2xl shadow-sm"><img src={VODAFONE_QR_URL} alt="V" className="w-10 h-10 object-contain" referrerPolicy="no-referrer" /></div>
@@ -741,6 +759,14 @@ export default function App() {
                                 <Smartphone size={32} />
                               )}
                               <span className="text-[10px] font-black uppercase tracking-widest">{t.vodafone}</span>
+                            </button>
+                            <button onClick={() => setPaymentType('instapay')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${paymentType === 'instapay' ? 'border-blue-500 bg-blue-600 text-white shadow-xl shadow-blue-100 scale-[1.02]' : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-[#1F2937] text-slate-400 hover:border-blue-200'}`}>
+                              {paymentType === 'instapay' ? (
+                                <div className="bg-white dark:bg-[#1F2937] p-2 rounded-2xl shadow-sm"><img src={INSTAPAY_LOGO_URL} alt="I" className="w-10 h-10 object-contain" referrerPolicy="no-referrer" /></div>
+                              ) : (
+                                <CreditCard size={32} />
+                              )}
+                              <span className="text-[10px] font-black uppercase tracking-widest">{t.instapay}</span>
                             </button>
                             <button onClick={() => setPaymentType('binance')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${paymentType === 'binance' ? 'border-amber-500 bg-amber-600 text-white shadow-xl shadow-amber-100 scale-[1.02]' : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-[#1F2937] text-slate-400 hover:border-amber-200'}`}>
                               {paymentType === 'binance' ? (
@@ -778,6 +804,33 @@ export default function App() {
                                 <div className="relative group">
                                   <input type="text" placeholder={t.binanceTxPlaceholder} value={binanceTx} onChange={(e) => setBinanceTx(e.target.value)} className="w-full px-8 py-6 rounded-[2.5rem] border-2 border-slate-100 dark:border-slate-800 text-center font-black text-xl focus:border-amber-500 bg-white dark:bg-[#1F2937] text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-300 shadow-sm" />
                                   <div className="absolute left-8 top-1/2 -translate-y-1/2 text-amber-500 group-focus-within:scale-110 transition-transform"><Hash size={24} /></div>
+                                </div>
+                              </div>
+                            ) : paymentType === 'instapay' ? (
+                              <div className="space-y-6">
+                                <div className="p-8 bg-blue-50 dark:bg-blue-950/20 rounded-[3.5rem] border-2 border-blue-100 dark:border-blue-900 shadow-inner relative overflow-hidden group">
+                                  <div className="absolute -right-10 -top-10 w-48 h-48 bg-blue-200/30 rounded-full blur-3xl group-hover:scale-110 transition-all duration-700"></div>
+                                  <div className="text-center relative z-10">
+                                    <span className="text-[10px] text-blue-700 dark:text-blue-400 font-black uppercase tracking-[0.4em] mb-6 block">{t.vodafoneNumberLabel}</span>
+                                    <div className="flex flex-col items-center gap-6">
+                                      <span className="text-5xl font-black text-blue-950 dark:text-blue-100 font-mono tracking-tighter">{INSTAPAY_NUMBER}</span>
+                                      <button onClick={() => handleCopy(INSTAPAY_NUMBER, 'm_i')} className="flex items-center gap-3 bg-white dark:bg-[#1F2937] px-8 py-4 rounded-3xl shadow-xl border border-blue-100 dark:border-blue-900 hover:scale-105 transition-all active:scale-95 group/btn">
+                                        {copyStatus === 'm_i' ? (
+                                          <><CheckCircle2 className="text-green-500" size={24} /><span className="text-sm font-black text-green-600 uppercase tracking-wider">{t.copied}</span></>
+                                        ) : (
+                                          <><img src={INSTAPAY_LOGO_URL} alt="I" className="w-6 h-6 object-contain group-hover/btn:rotate-12 transition-transform" referrerPolicy="no-referrer" /><span className="text-sm font-black text-blue-800 dark:text-blue-200 uppercase tracking-wider">{t.copy} Number</span></>
+                                        )}
+                                      </button>
+                                    </div>
+                                  </div>
+                                  <div className="mt-10 bg-white/70 dark:bg-[#1F2937]/70 backdrop-blur-md p-5 rounded-3xl border border-blue-100 dark:border-blue-900 flex items-start gap-3">
+                                    <Info className="text-blue-600 shrink-0" size={16} />
+                                    <p className="text-[11px] text-blue-900 dark:text-blue-100 font-bold leading-relaxed">{t.instructionInstapay}</p>
+                                  </div>
+                                </div>
+                                <div className="relative group">
+                                  <input type="text" placeholder={t.senderPhonePlaceholder} value={senderPhone} onChange={(e) => setSenderPhone(e.target.value)} className="w-full px-8 py-6 rounded-[2.5rem] border-2 border-slate-100 dark:border-slate-800 text-center font-black text-xl focus:border-blue-500 bg-white dark:bg-[#1F2937] text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-300 shadow-sm" />
+                                  <div className="absolute left-8 top-1/2 -translate-y-1/2 text-blue-500 group-focus-within:scale-110 transition-transform"><Smartphone size={24} /></div>
                                 </div>
                               </div>
                             ) : (

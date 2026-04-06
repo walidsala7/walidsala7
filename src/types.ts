@@ -19,4 +19,4 @@ export type Language = 'ar' | 'en';
 export type Currency = 'USD' | 'EGP';
 export type OrderStatus = 'pending' | 'accepted' | 'rejected';
 export type RemoteTool = 'ultra' | 'anydesk';
-export type PaymentType = 'vodafone' | 'binance';
+export type PaymentType = 'vodafone' | 'binance' | 'instapay';

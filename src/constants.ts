@@ -8,6 +8,8 @@ export const VODAFONE_NUMBER = "01002240615";
 export const VODAFONE_QR_URL = "https://i.ibb.co/fVzgvLrW/Vodafone-logo1.png";
 export const BINANCE_ID = "1017392350";
 export const BINANCE_QR_URL = "https://i.ibb.co/TM2f81k6/0x0.png";
+export const INSTAPAY_NUMBER = "01156003509";
+export const INSTAPAY_LOGO_URL = "https://i.ibb.co/WpKtLSBV/000.png";
 export const WHATSAPP_LINK = "https://wa.me/201002240615";
 
 export const productsData: Product[] = [
@@ -96,6 +98,7 @@ export const translations = {
         paymentTitle: "طرق الدفع المتاحة",
         vodafone: "فودافون كاش",
         binance: "بينانس (USDT)",
+        instapay: "إنستا باي (InstaPay)",
         copy: "نسخ",
         copied: "تم النسخ!",
         selectPayment: "تأكيد تفاصيل الإيجار",
@@ -104,6 +107,7 @@ export const translations = {
         confirmOrder: "تأكيد الطلب",
         instructionBinance: "انسخ الـ ID وأتمم الدفع في تطبيق Binance",
         instructionVodafone: "حول المبلغ للرقم أعلاه (يشمل 5 ج.م رسوم)",
+        instructionInstapay: "حول المبلغ لرقم إنستا باي أعلاه",
         ultraId: "ID الخاص بـ UltraViewer",
         ultraPass: "Password الخاص بـ UltraViewer",
         anyDeskId: "ID الخاص بـ AnyDesk",
@@ -150,6 +154,7 @@ export const translations = {
         paymentTitle: "Available Payment Methods",
         vodafone: "Vodafone Cash",
         binance: "Binance (USDT)",
+        instapay: "InstaPay",
         copy: "Copy",
         copied: "Copied!",
         selectPayment: "Confirm Rental Details",
@@ -158,6 +163,7 @@ export const translations = {
         confirmOrder: "Confirm Order",
         instructionBinance: "Copy ID and complete payment in Binance app",
         instructionVodafone: "Transfer to the number above (+ fees included)",
+        instructionInstapay: "Transfer to the InstaPay number above",
         ultraId: "UltraViewer ID",
         ultraPass: "UltraViewer Password",
         anyDeskId: "AnyDesk ID",
