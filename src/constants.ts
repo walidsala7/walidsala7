@@ -25,7 +25,7 @@ export const productsData: Product[] = [
     { id: 15, name: "TFM Tool Pro", priceUsd: 3, duration: "6 hours", image: "https://i.ibb.co/Z1BQrwcd/ASWA.png", category: 'rent' },
     { id: 16, name: "CHEETAH TOOL", priceUsd: 3, image: "https://i.ibb.co/dsTsHCzQ/ASD.png", category: 'rent' },
     { id: 17, name: "Griffin Unlocker Tool RENT", priceUsd: 3, duration: "6 hours", image: "https://i.ibb.co/Fqy41HQn/RF.png", category: 'rent' },
-    { id: 12, name: "RENT EFT PRO (No Auto Login)", priceUsd: 4, duration: "1 hours", image: "https://i.ibb.co/WWnrdFxS/WAD.png", category: 'rent' },
+    { id: 12, name: "RENT EFT PRO", priceUsd: 4, duration: "1 hours", image: "https://i.ibb.co/WWnrdFxS/WAD.png", category: 'rent' },
     { id: 14, name: "Hydra Tool", priceUsd: 4, duration: "24 hours", image: "https://i.ibb.co/mVKsYxm0/DSFDSFSDF.png", category: 'rent' },
     { id: 21, name: "T-TOOL PRO", priceUsd: 4, duration: "6 hours", image: "https://i.ibb.co/C5znJK1G/image.png", category: 'rent' },
     { id: 10, name: "E-GSM Rent", priceUsd: 5, image: "https://i.ibb.co/HT0NFsdJ/SDADA.png", category: 'rent' },
@@ -138,7 +138,8 @@ export const translations = {
         quantityLabel: "الكمية",
         emailLabel: "البريد الإلكتروني",
         snLabel: "ادخل رقم SN",
-        helpText: "هل تحتاج مساعدة؟ تواصل معنا عبر واتساب"
+        helpText: "هل تحتاج مساعدة؟ تواصل معنا عبر واتساب",
+        islamicHeader: "بسم الله الرحمن الرحيم - وَقُل رَّبِّ زِدْنِي عِلْمًا"
     },
     en: {
         title: "Software Tool Rentals",
@@ -194,6 +195,7 @@ export const translations = {
         quantityLabel: "Quantity",
         emailLabel: "Email",
         snLabel: "Enter SN",
-        helpText: "Need help? Contact us on WhatsApp"
+        helpText: "Need help? Contact us on WhatsApp",
+        islamicHeader: "In the name of Allah, the Most Gracious, the Most Merciful"
     }
 } as const;

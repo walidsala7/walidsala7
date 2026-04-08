@@ -22,6 +22,8 @@ import {
   User,
   Mail,
   Phone,
+  Facebook,
+  Instagram,
   Link,
   ChevronRight,
   AlertCircle,
@@ -65,7 +67,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 export default function App() {
   const [lang, setLang] = useState<Language>("en");
   const [currency, setCurrency] = useState<Currency>("USD");
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   
   const [currentCategory, setCurrentCategory] = useState<Product['category']>('rent');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -178,6 +180,16 @@ export default function App() {
     return () => clearInterval(interval);
   }, [orderSuccess, timer, orderStatus]);
 
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setShowScrollTop(window.scrollY > 400);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
   const formatPrice = (usdAmount: number, useQuantity = false, isCredit = false) => {
     let finalUsd = usdAmount;
     if (useQuantity) finalUsd = usdAmount * quantity;
@@ -276,14 +288,44 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen pb-20 font-sans transition-colors duration-300 ${isDarkMode ? 'dark bg-[#0B0F1A] text-slate-100' : 'bg-white text-slate-900'}`} dir={t.dir}>
+    <div className={`min-h-screen pb-20 font-sans transition-colors duration-300 relative ${isDarkMode ? 'dark bg-[#0B0F1A] text-slate-100' : 'bg-slate-50/50 text-slate-900'}`} dir={t.dir}>
+      <div className="fixed inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.02] z-0">
+        <svg width="100%" height="100%">
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
+          </pattern>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+      </div>
+
       <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 z-[90] bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform">
         <WhatsAppIcon className="w-8 h-8" />
       </a>
+
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            onClick={scrollToTop}
+            className="fixed bottom-24 right-6 z-[90] bg-white dark:bg-[#161B26] text-blue-600 p-4 rounded-full shadow-xl border border-slate-100 dark:border-slate-800 hover:scale-110 transition-transform"
+          >
+            <ArrowRight className="-rotate-90" size={24} />
+          </motion.button>
+        )}
+      </AnimatePresence>
       
       <nav className="bg-white/90 dark:bg-[#161B26]/90 backdrop-blur-md border-b dark:border-slate-800 px-4 py-4 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <span className="text-xl md:text-2xl font-black text-blue-600 tracking-tighter uppercase shrink-0">WALID SALA7</span>
+          <div className="flex items-center gap-3 group cursor-default">
+            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:rotate-12 transition-transform">
+              <Zap className="text-white" size={20} />
+            </div>
+            <span className="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tighter uppercase shrink-0">
+              WALID <span className="text-blue-600">SALA7</span>
+            </span>
+          </div>
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
             <div className="flex items-center bg-slate-100 dark:bg-[#1F2937] p-1 rounded-xl shrink-0">
               <button onClick={() => setCurrency('USD')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${currency === 'USD' ? 'bg-white dark:bg-[#161B26] text-blue-600 shadow-sm' : 'text-slate-500'}`}>{t.usd}</button>
@@ -309,93 +351,256 @@ export default function App() {
 
       <main className="max-w-7xl mx-auto p-4 md:p-8">
         <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-4">{t.title}</h1>
-          <p className="text-blue-600 font-extrabold text-xl md:text-2xl mb-8">{t.subtitle}</p>
+          <h1 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">{t.title}</h1>
+          <div className="flex items-center justify-center gap-3 mb-10">
+            <div className="h-1 w-12 bg-gradient-to-r from-transparent to-blue-600 rounded-full"></div>
+            <p className="text-blue-600 font-black text-lg md:text-xl uppercase tracking-[0.2em]">{t.subtitle}</p>
+            <div className="h-1 w-12 bg-gradient-to-l from-transparent to-blue-600 rounded-full"></div>
+          </div>
           
-          <div className="max-w-2xl mx-auto mb-8 relative">
-            <Search size={20} className={`absolute ${t.dir === 'rtl' ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-slate-400`} />
+          <div className="max-w-2xl mx-auto mb-10 relative group">
+            <div className="absolute inset-0 bg-blue-600/5 blur-2xl rounded-full group-focus-within:bg-blue-600/10 transition-all"></div>
+            <Search size={22} className={`absolute ${t.dir === 'rtl' ? 'right-6' : 'left-6'} top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors z-10`} />
             <input 
               type="text" 
               placeholder={t.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full ${t.dir === 'rtl' ? 'pr-12 pl-6' : 'pl-12 pr-6'} py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 focus:border-blue-500 outline-none font-bold shadow-sm transition-all bg-white dark:bg-[#161B26] text-slate-900 dark:text-white`}
+              className={`w-full ${t.dir === 'rtl' ? 'pr-16 pl-8' : 'pl-16 pr-8'} py-5 rounded-[2rem] border-2 border-white dark:border-slate-800 focus:border-blue-500 outline-none font-bold shadow-xl shadow-slate-200/50 dark:shadow-none transition-all bg-white dark:bg-[#161B26] text-slate-900 dark:text-white relative z-0`}
             />
           </div>
 
-          <div className="flex justify-center gap-4 mb-8 overflow-x-auto no-scrollbar py-2">
-            <button onClick={() => setCurrentCategory('rent')} className={`px-8 py-3 rounded-2xl font-black transition-all whitespace-nowrap ${currentCategory === 'rent' ? 'bg-blue-600 text-white shadow-xl scale-105' : 'bg-white dark:bg-[#161B26] text-slate-600 dark:text-slate-400 border dark:border-slate-800'}`}>{t.rentalsTab}</button>
-            <button onClick={() => setCurrentCategory('credit')} className={`px-8 py-3 rounded-2xl font-black transition-all whitespace-nowrap ${currentCategory === 'credit' ? 'bg-blue-600 text-white shadow-xl scale-105' : 'bg-white dark:bg-[#161B26] text-slate-600 dark:text-slate-400 border dark:border-slate-800'}`}>{t.creditsTab}</button>
-            <button onClick={() => setCurrentCategory('server')} className={`px-8 py-3 rounded-2xl font-black transition-all whitespace-nowrap ${currentCategory === 'server' ? 'bg-blue-600 text-white shadow-xl scale-105' : 'bg-white dark:bg-[#161B26] text-slate-600 dark:text-slate-400 border dark:border-slate-800'}`}>{t.serverTab}</button>
+          <div className="flex justify-center gap-4 mb-8 overflow-x-auto no-scrollbar py-2 px-4">
+            {[
+              { id: 'rent', label: t.rentalsTab, icon: <Laptop size={18} /> },
+              { id: 'credit', label: t.creditsTab, icon: <Zap size={18} /> },
+              { id: 'server', label: t.serverTab, icon: <Monitor size={18} /> }
+            ].map((cat) => (
+              <button 
+                key={cat.id}
+                onClick={() => setCurrentCategory(cat.id as any)} 
+                className={`px-8 py-4 rounded-[2rem] font-black transition-all whitespace-nowrap flex items-center gap-3 border-2 ${
+                  currentCategory === cat.id 
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-xl shadow-blue-500/20 scale-105' 
+                    : 'bg-white dark:bg-[#161B26] text-slate-500 dark:text-slate-400 border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900'
+                }`}
+              >
+                {cat.icon}
+                {cat.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+        <motion.div 
+          layout
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-20"
+        >
           {productsData
             .filter(p => p.category === currentCategory)
             .filter(p => (lang === 'en' && p.nameEn ? p.nameEn : p.name).toLowerCase().includes(searchQuery.toLowerCase()))
-            .map((product) => (
-            <div key={product.id} className="bg-white dark:bg-[#161B26] rounded-[2rem] overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all flex flex-col group">
-              <div className="h-36 bg-white dark:bg-[#1F2937] flex items-center justify-center relative overflow-hidden">
-                <img src={product.image} alt={lang === 'en' && product.nameEn ? product.nameEn : product.name} className="h-full w-full object-cover transition-transform group-hover:scale-110" referrerPolicy="no-referrer" />
-              </div>
-              <div className="p-6 flex flex-col flex-grow">
-                <h3 className="font-bold text-slate-800 dark:text-slate-100 text-lg mb-4 h-14 line-clamp-2">{lang === 'en' && product.nameEn ? product.nameEn : product.name}</h3>
-                <div className="flex justify-between items-center mt-auto">
-                  <div>
-                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{t.priceLabel}</p>
-                    <p className="text-2xl font-black text-blue-600 leading-none" title={product.tooltip}>{formatPrice(product.priceUsd, false, product.category === 'credit')}</p>
+            .map((product, index) => (
+            <motion.div 
+              key={product.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className="bg-white dark:bg-[#161B26] rounded-[2.5rem] overflow-hidden border border-slate-100 dark:border-slate-800/50 shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 dark:hover:shadow-blue-500/20 transition-all duration-500 flex flex-col group relative"
+            >
+              <div className="h-48 bg-slate-50 dark:bg-[#1F2937] flex items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
+                <img 
+                  src={product.image} 
+                  alt={lang === 'en' && product.nameEn ? product.nameEn : product.name} 
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                  referrerPolicy="no-referrer" 
+                />
+                <div className="absolute top-4 right-4 z-20">
+                  <div className="bg-white/90 dark:bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 shadow-sm">
+                    <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">
+                      {product.category === 'rent' ? 'Rental' : product.category === 'credit' ? 'Credit' : 'Server'}
+                    </span>
                   </div>
-                  <button onClick={() => { setSelectedProduct(product); setOrderSuccess(false); setQuantity(product.minQty || 1); setSelectedSize(""); setDownloadLink(product.downloadLink || ""); setSn(""); }} className="bg-slate-900 dark:bg-[#1F2937] text-white px-6 py-3 rounded-2xl font-black text-sm hover:bg-blue-600 transition-all active:scale-95">
-                    {t.rentNow}
+                </div>
+              </div>
+              
+              <div className="p-6 flex flex-col flex-grow relative">
+                <div className="absolute -top-6 left-6 bg-blue-600 text-white p-3 rounded-2xl shadow-xl shadow-blue-500/20 group-hover:-translate-y-1 transition-transform duration-300 z-20">
+                  <Zap size={18} />
+                </div>
+                
+                <h3 className="font-black text-slate-800 dark:text-slate-100 text-lg mb-4 h-14 line-clamp-2 mt-2 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  {lang === 'en' && product.nameEn ? product.nameEn : product.name}
+                </h3>
+                
+                <div className="flex justify-between items-end mt-auto">
+                  <div className="space-y-1">
+                    <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{t.priceLabel}</p>
+                    <div className="flex items-baseline gap-1">
+                      <p className="text-2xl font-black text-slate-900 dark:text-white leading-none" title={product.tooltip}>
+                        {formatPrice(product.priceUsd, false, product.category === 'credit')}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <button 
+                    onClick={() => { setSelectedProduct(product); setOrderSuccess(false); setQuantity(product.minQty || 1); setSelectedSize(""); setDownloadLink(product.downloadLink || ""); setSn(""); }} 
+                    className="bg-blue-600 text-white p-4 rounded-2xl font-black text-sm hover:bg-blue-700 hover:scale-110 transition-all active:scale-90 shadow-lg shadow-blue-500/20 flex items-center justify-center group/btn"
+                  >
+                    <ArrowRight size={20} className="group-hover/btn:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+          {[
+            { icon: <Zap className="text-blue-600" />, title: lang === 'ar' ? 'تسليم فوري' : 'Instant Delivery', desc: lang === 'ar' ? 'يتم تفعيل طلبك في دقائق معدودة' : 'Your order is activated in minutes' },
+            { icon: <ShieldCheck className="text-green-500" />, title: lang === 'ar' ? 'دفع آمن' : 'Secure Payment', desc: lang === 'ar' ? 'وسائل دفع موثوقة ومشفرة' : 'Trusted and encrypted payment methods' },
+            { icon: <Phone className="text-rose-500" />, title: lang === 'ar' ? 'دعم 24/7' : '24/7 Support', desc: lang === 'ar' ? 'فريقنا متاح دائماً لمساعدتك' : 'Our team is always here to help' }
+          ].map((benefit, i) => (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="bg-white dark:bg-[#161B26] p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm flex items-start gap-6 group hover:shadow-xl transition-all"
+            >
+              <div className="p-4 bg-slate-50 dark:bg-[#1F2937] rounded-2xl group-hover:scale-110 transition-transform">
+                {benefit.icon}
+              </div>
+              <div>
+                <h4 className="font-black text-slate-900 dark:text-white mb-1">{benefit.title}</h4>
+                <p className="text-slate-500 dark:text-slate-400 text-sm font-bold leading-relaxed">{benefit.desc}</p>
+              </div>
+            </motion.div>
           ))}
         </div>
 
-        <div className="bg-white dark:bg-[#161B26] rounded-[2.5rem] p-8 md:p-12 border border-slate-100 dark:border-slate-800 shadow-sm max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-10 flex items-center justify-center gap-4">
-            <Wallet className="text-blue-600" /> {t.paymentTitle}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-3xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900 flex items-center justify-between group hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors">
-              <div className="flex items-center gap-4">
-                <div className="p-1 bg-white dark:bg-[#1F2937] rounded-2xl shadow-sm text-rose-500 overflow-hidden">
-                  <img src={VODAFONE_QR_URL} alt="Vodafone QR" className="w-12 h-12 object-contain" referrerPolicy="no-referrer" />
+        <div className="bg-white dark:bg-[#161B26] rounded-[3rem] p-8 md:p-16 border border-slate-100 dark:border-slate-800 shadow-2xl shadow-slate-200/50 dark:shadow-none max-w-5xl mx-auto text-center relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-rose-500 via-blue-600 to-amber-500"></div>
+          
+          <div className="relative z-10">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4 flex items-center justify-center gap-4">
+              <Wallet className="text-blue-600" size={32} /> {t.paymentTitle}
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 font-bold mb-12 max-w-md mx-auto">{t.helpText}</p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[
+                { id: 'v1', name: t.vodafone, value: VODAFONE_NUMBER, icon: VODAFONE_QR_URL, color: 'rose' },
+                { id: 'i1', name: t.instapay, value: INSTAPAY_NUMBER, icon: INSTAPAY_LOGO_URL, color: 'blue' },
+                { id: 'b1', name: t.binance, value: BINANCE_ID, icon: BINANCE_QR_URL, color: 'amber' }
+              ].map((method) => (
+                <div key={method.id} className="group relative">
+                  <div className={`absolute inset-0 bg-${method.color}-500/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl`}></div>
+                  <div className="relative p-8 rounded-[2.5rem] bg-slate-50 dark:bg-[#1F2937] border border-slate-100 dark:border-slate-800 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl">
+                    <div className="flex flex-col items-center gap-6">
+                      <div className="p-4 bg-white dark:bg-[#161B26] rounded-3xl shadow-sm group-hover:scale-110 transition-transform duration-500">
+                        <img src={method.icon} alt={method.name} className="w-16 h-16 object-contain" referrerPolicy="no-referrer" />
+                      </div>
+                      <div className="text-center">
+                        <h4 className="font-black text-slate-900 dark:text-white text-lg mb-1">{method.name}</h4>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Official Account</p>
+                        <button 
+                          onClick={() => handleCopy(method.value, method.id as any)} 
+                          className={`w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl font-mono font-bold text-sm transition-all ${
+                            copyStatus === method.id 
+                              ? 'bg-green-500 text-white' 
+                              : `bg-white dark:bg-[#161B26] text-${method.color}-600 border border-${method.color}-100 dark:border-${method.color}-900/30 hover:bg-${method.color}-50 dark:hover:bg-${method.color}-950/30`
+                          }`}
+                        >
+                          {copyStatus === method.id ? <CheckCircle2 size={18} /> : <Hash size={18} />}
+                          {method.value}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <span className="font-black text-rose-900 dark:text-rose-100">{t.vodafone}</span>
-              </div>
-              <button onClick={() => handleCopy(VODAFONE_NUMBER, 'v1')} className="font-mono font-bold text-sm text-rose-600 bg-white dark:bg-[#1F2937] px-4 py-2 rounded-xl border border-rose-100 dark:border-rose-900 flex items-center gap-2">
-                {copyStatus === 'v1' ? <CheckCircle2 size={16} /> : <img src={VODAFONE_QR_URL} alt="QR" className="w-4 h-4 object-contain" referrerPolicy="no-referrer" />} {VODAFONE_NUMBER}
-              </button>
-            </div>
-            <div className="p-6 rounded-3xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900 flex items-center justify-between group hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors">
-              <div className="flex items-center gap-4">
-                <div className="p-1 bg-white dark:bg-[#1F2937] rounded-2xl shadow-sm text-blue-500 overflow-hidden">
-                  <img src={INSTAPAY_LOGO_URL} alt="InstaPay Logo" className="w-12 h-12 object-contain" referrerPolicy="no-referrer" />
-                </div>
-                <span className="font-black text-blue-900 dark:text-blue-100">{t.instapay}</span>
-              </div>
-              <button onClick={() => handleCopy(INSTAPAY_NUMBER, 'i1')} className="font-mono font-bold text-sm text-blue-600 bg-white dark:bg-[#1F2937] px-4 py-2 rounded-xl border border-blue-100 dark:border-blue-900 flex items-center gap-2">
-                {copyStatus === 'i1' ? <CheckCircle2 size={16} /> : <img src={INSTAPAY_LOGO_URL} alt="QR" className="w-4 h-4 object-contain" referrerPolicy="no-referrer" />} {INSTAPAY_NUMBER}
-              </button>
-            </div>
-            <div className="p-6 rounded-3xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900 flex items-center justify-between group hover:bg-amber-50 dark:hover:bg-amber-950/30 transition-colors">
-              <div className="flex items-center gap-4">
-                <div className="p-1 bg-white dark:bg-[#1F2937] rounded-2xl shadow-sm text-amber-500 overflow-hidden">
-                  <img src={BINANCE_QR_URL} alt="Binance QR" className="w-12 h-12 object-contain" referrerPolicy="no-referrer" />
-                </div>
-                <span className="font-black text-amber-900 dark:text-amber-100">{t.binance}</span>
-              </div>
-              <button onClick={() => handleCopy(BINANCE_ID, 'b1')} className="font-mono font-bold text-sm text-amber-600 bg-white dark:bg-[#1F2937] px-4 py-2 rounded-xl border border-amber-100 dark:border-amber-900 flex items-center gap-2">
-                {copyStatus === 'b1' ? <CheckCircle2 size={16} /> : <img src={BINANCE_QR_URL} alt="QR" className="w-4 h-4 object-contain" referrerPolicy="no-referrer" />} {BINANCE_ID}
-              </button>
+              ))}
             </div>
           </div>
         </div>
       </main>
+
+      <footer className="max-w-7xl mx-auto px-4 py-20 border-t dark:border-slate-800 mt-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+                <Zap className="text-white" size={20} />
+              </div>
+              <span className="text-xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">
+                WALID <span className="text-blue-600">SALA7</span>
+              </span>
+            </div>
+            <p className="text-slate-500 dark:text-slate-400 font-bold text-sm leading-relaxed">
+              {t.subtitle}
+            </p>
+          </div>
+          
+          <div className="space-y-6">
+            <h4 className="font-black text-slate-900 dark:text-white text-lg uppercase tracking-widest">Quick Links</h4>
+            <ul className="space-y-4">
+              {['rent', 'credit', 'server'].map((cat) => (
+                <li key={cat}>
+                  <button 
+                    onClick={() => setCurrentCategory(cat as any)}
+                    className="text-slate-500 dark:text-slate-400 font-bold hover:text-blue-600 transition-colors flex items-center gap-2"
+                  >
+                    <ChevronRight size={14} />
+                    {cat === 'rent' ? t.rentalsTab : cat === 'credit' ? t.creditsTab : t.serverTab}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <div className="space-y-6">
+            <h4 className="font-black text-slate-900 dark:text-white text-lg uppercase tracking-widest">Contact Us</h4>
+            <div className="space-y-4">
+              <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-[#1F2937] rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900 transition-all group">
+                <div className="p-3 bg-green-500 rounded-xl text-white group-hover:scale-110 transition-transform">
+                  <Phone size={20} />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">WhatsApp</p>
+                  <p className="text-slate-900 dark:text-white font-black">{VODAFONE_NUMBER}</p>
+                </div>
+              </a>
+
+              <a href="https://www.facebook.com/walid.salah.359716/about" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-[#1F2937] rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900 transition-all group">
+                <div className="p-3 bg-blue-600 rounded-xl text-white group-hover:scale-110 transition-transform">
+                  <Facebook size={20} />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Facebook</p>
+                  <p className="text-slate-900 dark:text-white font-black">Walid Salah</p>
+                </div>
+              </a>
+
+              <a href="https://www.instagram.com/waleed_salah_00/" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-[#1F2937] rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900 transition-all group">
+                <div className="p-3 bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 rounded-xl text-white group-hover:scale-110 transition-transform">
+                  <Instagram size={20} />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Instagram</p>
+                  <p className="text-slate-900 dark:text-white font-black">@waleed_salah_00</p>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <div className="mt-20 pt-8 border-t dark:border-slate-800 text-center">
+          <p className="text-slate-400 text-xs font-black uppercase tracking-[0.3em]">
+            © 2026 WALID SALA7 SERVICES. ALL RIGHTS RESERVED.
+          </p>
+        </div>
+      </footer>
 
       <AnimatePresence>
         {selectedProduct && (
@@ -884,19 +1089,21 @@ export default function App() {
                           <button 
                             onClick={handleFinalOrder} 
                             disabled={!isFormValid()} 
-                            className={`w-full py-7 rounded-[3rem] text-2xl font-black transition-all flex items-center justify-center gap-4 shadow-2xl relative overflow-hidden group ${
+                            className={`w-full py-8 rounded-[3.5rem] text-2xl font-black transition-all flex items-center justify-center gap-4 shadow-2xl relative overflow-hidden group ${
                               isFormValid() 
-                                ? 'bg-blue-600 hover:bg-green-600 text-white shadow-blue-200 scale-[1.02] active:scale-95' 
+                                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-green-600 hover:to-emerald-600 text-white shadow-blue-500/25 scale-[1.02] active:scale-95' 
                                 : 'bg-slate-100 dark:bg-[#1F2937] text-slate-400 dark:text-slate-600 cursor-not-allowed border-2 border-slate-200 dark:border-slate-700'
                             }`}
                           >
                             <span className="relative z-10">{t.confirmOrder}</span>
-                            <ChevronRight size={28} className="relative z-10 group-hover:translate-x-1 transition-transform" />
+                            <div className="relative z-10 p-2 bg-white/20 rounded-full group-hover:bg-white/30 transition-colors">
+                              <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
+                            </div>
                             {isFormValid() && (
                               <motion.div 
-                                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
                                 animate={{ x: ['-100%', '100%'] }}
-                                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
                               />
                             )}
                           </button>
@@ -910,12 +1117,6 @@ export default function App() {
           </div>
         )}
       </AnimatePresence>
-
-      <footer className="text-center py-16 px-4">
-        <p className="text-slate-400 dark:text-slate-500 text-[10px] font-black tracking-[0.3em] uppercase">
-          Walid Sala7 &copy; {new Date().getFullYear()} - {t.rights}
-        </p>
-      </footer>
     </div>
   );
 }
