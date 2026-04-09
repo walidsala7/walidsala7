@@ -45,6 +45,8 @@ import {
   BINANCE_QR_URL, 
   INSTAPAY_NUMBER,
   INSTAPAY_LOGO_URL,
+  PAYPAL_LINK,
+  PAYPAL_LOGO_URL,
   WHATSAPP_LINK, 
   productsData, 
   translations 
@@ -244,6 +246,7 @@ export default function App() {
     if (paymentType === 'vodafone') message += `📱 Method: Vodafone Cash\n📞 From: ${senderPhone}\n`;
     else if (paymentType === 'binance') message += `🔶 Method: Binance\n🧾 ID: ${binanceTx}\n`;
     else if (paymentType === 'instapay') message += `💸 Method: InstaPay\n📞 From: ${senderPhone}\n`;
+    else if (paymentType === 'paypal') message += `🅿️ Method: PayPal\n👤 From: ${senderPhone}\n`;
     
     try {
       await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -489,11 +492,12 @@ export default function App() {
             </h2>
             <p className="text-slate-500 dark:text-slate-400 font-bold mb-12 max-w-md mx-auto">{t.helpText}</p>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {[
                 { id: 'v1', name: t.vodafone, value: VODAFONE_NUMBER, icon: VODAFONE_QR_URL, color: 'rose' },
                 { id: 'i1', name: t.instapay, value: INSTAPAY_NUMBER, icon: INSTAPAY_LOGO_URL, color: 'blue' },
-                { id: 'b1', name: t.binance, value: BINANCE_ID, icon: BINANCE_QR_URL, color: 'amber' }
+                { id: 'b1', name: t.binance, value: BINANCE_ID, icon: BINANCE_QR_URL, color: 'amber' },
+                { id: 'p1', name: t.paypal, value: 'PayPal.me', icon: PAYPAL_LOGO_URL, color: 'indigo', isLink: true, link: PAYPAL_LINK }
               ].map((method) => (
                 <div key={method.id} className="group relative">
                   <div className={`absolute inset-0 bg-${method.color}-500/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl`}></div>
@@ -505,17 +509,29 @@ export default function App() {
                       <div className="text-center">
                         <h4 className="font-black text-slate-900 dark:text-white text-lg mb-1">{method.name}</h4>
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Official Account</p>
-                        <button 
-                          onClick={() => handleCopy(method.value, method.id as any)} 
-                          className={`w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl font-mono font-bold text-sm transition-all ${
-                            copyStatus === method.id 
-                              ? 'bg-green-500 text-white' 
-                              : `bg-white dark:bg-[#161B26] text-${method.color}-600 border border-${method.color}-100 dark:border-${method.color}-900/30 hover:bg-${method.color}-50 dark:hover:bg-${method.color}-950/30`
-                          }`}
-                        >
-                          {copyStatus === method.id ? <CheckCircle2 size={18} /> : <Hash size={18} />}
-                          {method.value}
-                        </button>
+                        {method.isLink ? (
+                          <a 
+                            href={method.link}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={`w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl font-mono font-bold text-sm transition-all bg-white dark:bg-[#161B26] text-${method.color}-600 border border-${method.color}-100 dark:border-${method.color}-900/30 hover:bg-${method.color}-50 dark:hover:bg-${method.color}-950/30`}
+                          >
+                            <Link size={18} />
+                            {method.value}
+                          </a>
+                        ) : (
+                          <button 
+                            onClick={() => handleCopy(method.value, method.id as any)} 
+                            className={`w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl font-mono font-bold text-sm transition-all ${
+                              copyStatus === method.id 
+                                ? 'bg-green-500 text-white' 
+                                : `bg-white dark:bg-[#161B26] text-${method.color}-600 border border-${method.color}-100 dark:border-${method.color}-900/30 hover:bg-${method.color}-50 dark:hover:bg-${method.color}-950/30`
+                            }`}
+                          >
+                            {copyStatus === method.id ? <CheckCircle2 size={18} /> : <Hash size={18} />}
+                            {method.value}
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -956,7 +972,7 @@ export default function App() {
                         </div>
 
                         <div className="space-y-8">
-                          <div className="grid grid-cols-3 gap-4">
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <button onClick={() => setPaymentType('vodafone')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${paymentType === 'vodafone' ? 'border-rose-500 bg-rose-600 text-white shadow-xl shadow-rose-100 scale-[1.02]' : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-[#1F2937] text-slate-400 hover:border-rose-200'}`}>
                               {paymentType === 'vodafone' ? (
                                 <div className="bg-white dark:bg-[#1F2937] p-2 rounded-2xl shadow-sm"><img src={VODAFONE_QR_URL} alt="V" className="w-10 h-10 object-contain" referrerPolicy="no-referrer" /></div>
@@ -981,9 +997,59 @@ export default function App() {
                               )}
                               <span className="text-[10px] font-black uppercase tracking-widest">{t.binance}</span>
                             </button>
+                            <button onClick={() => setPaymentType('paypal')} className={`p-6 rounded-[2.5rem] border-2 flex flex-col items-center gap-3 transition-all ${paymentType === 'paypal' ? 'border-indigo-500 bg-indigo-600 text-white shadow-xl shadow-indigo-100 scale-[1.02]' : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-[#1F2937] text-slate-400 hover:border-indigo-200'}`}>
+                              {paymentType === 'paypal' ? (
+                                <div className="bg-white dark:bg-[#1F2937] p-2 rounded-2xl shadow-sm"><img src={PAYPAL_LOGO_URL} alt="P" className="w-10 h-10 object-contain" referrerPolicy="no-referrer" /></div>
+                              ) : (
+                                <Link size={32} />
+                              )}
+                              <span className="text-[10px] font-black uppercase tracking-widest">{t.paypal}</span>
+                            </button>
                           </div>
 
                           <motion.div layout className="relative">
+                            {paymentType === 'paypal' && (
+                              <div className="space-y-6">
+                                <div className="p-8 bg-indigo-50 dark:bg-indigo-950/20 rounded-[3.5rem] border-2 border-indigo-100 dark:border-indigo-900 shadow-inner relative overflow-hidden group">
+                                  <div className="absolute -right-10 -top-10 w-48 h-48 bg-indigo-200/30 rounded-full blur-3xl group-hover:scale-110 transition-all duration-700"></div>
+                                  <div className="text-center relative z-10">
+                                    <span className="text-[10px] text-indigo-700 dark:text-indigo-400 font-black uppercase tracking-[0.4em] mb-6 block">PayPal Payment</span>
+                                    <div className="flex flex-col items-center gap-6">
+                                      <a 
+                                        href={PAYPAL_LINK} 
+                                        target="_blank" 
+                                        rel="noreferrer" 
+                                        className="flex items-center gap-4 bg-white dark:bg-[#1F2937] px-10 py-5 rounded-[2rem] shadow-2xl border-2 border-indigo-100 dark:border-indigo-900 hover:scale-105 transition-all active:scale-95 group/btn"
+                                      >
+                                        <img src={PAYPAL_LOGO_URL} alt="PayPal" className="w-8 h-8 object-contain" referrerPolicy="no-referrer" />
+                                        <span className="text-lg font-black text-indigo-600 uppercase tracking-wider">Pay via PayPal</span>
+                                        <ArrowRight size={20} className="text-indigo-400 group-hover/btn:translate-x-1 transition-transform" />
+                                      </a>
+                                      <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">{t.instructionPaypal}</p>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                  <label className="flex items-center gap-2 text-sm font-black text-slate-700 dark:text-slate-300 ml-2">
+                                    <User size={16} className="text-blue-500" />
+                                    {lang === 'ar' ? 'اسم حسابك في PayPal:' : 'Your PayPal Name/Email:'}
+                                  </label>
+                                  <div className="relative group">
+                                    <input 
+                                      type="text" 
+                                      value={senderPhone} 
+                                      onChange={(e) => setSenderPhone(e.target.value)} 
+                                      placeholder={lang === 'ar' ? 'اكتب اسمك أو بريدك في PayPal' : 'Enter your PayPal name or email'} 
+                                      className="w-full pl-6 pr-12 py-5 rounded-3xl border-2 border-white dark:border-slate-800 font-bold focus:border-blue-500 focus:ring-8 focus:ring-blue-500/5 outline-none transition-all bg-white dark:bg-[#1F2937] text-slate-900 dark:text-white shadow-sm"
+                                    />
+                                    <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors">
+                                      <Mail size={20} />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                             {paymentType === 'binance' ? (
                               <div className="space-y-6">
                                 <div className="p-8 bg-amber-50 dark:bg-amber-950/20 rounded-[3.5rem] border-2 border-amber-100 dark:border-amber-900 shadow-inner relative overflow-hidden group">
