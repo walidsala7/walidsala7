@@ -419,9 +419,12 @@ export default function App() {
                   referrerPolicy="no-referrer" 
                 />
                 <div className="absolute top-4 right-4 z-20">
-                  <div className="bg-white/90 dark:bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 shadow-sm">
-                    <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">
-                      {product.category === 'rent' ? 'Rental' : product.category === 'credit' ? 'Credit' : 'Server'}
+                  <div className="bg-white/90 dark:bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 shadow-sm flex items-center gap-1.5">
+                    {product.category === 'rent' && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] animate-pulse"></span>
+                    )}
+                    <span className={`text-[10px] font-black uppercase tracking-widest ${product.category === 'rent' ? 'text-emerald-600 dark:text-emerald-400' : 'text-blue-600 dark:text-blue-400'}`}>
+                      {product.category === 'rent' ? 'Online' : product.category === 'credit' ? 'Credit' : 'Server'}
                     </span>
                   </div>
                 </div>
