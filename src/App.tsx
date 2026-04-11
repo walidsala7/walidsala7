@@ -428,10 +428,6 @@ export default function App() {
               </div>
               
               <div className="p-6 flex flex-col flex-grow relative">
-                <div className="absolute -top-6 left-6 bg-blue-600 text-white p-3 rounded-2xl shadow-xl shadow-blue-500/20 group-hover:-translate-y-1 transition-transform duration-300 z-20">
-                  <Zap size={18} />
-                </div>
-                
                 <h3 className="font-black text-slate-800 dark:text-slate-100 text-lg mb-4 h-14 line-clamp-2 mt-2 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   {lang === 'en' && product.nameEn ? product.nameEn : product.name}
                 </h3>
