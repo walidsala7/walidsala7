@@ -19,6 +19,7 @@ export const productsData: Product[] = [
     { id: 3, name: "TSM Tool", priceUsd: 1, duration: "12 hours", image: "https://i.ibb.co/r2xLTz9n/as.png", category: 'rent' },
     { id: 8, name: "Unlock Tool", priceUsd: 1, duration: "6 hours", image: "https://i.ibb.co/b52htYz1/fdg.png", category: 'rent' },
     { id: 13, name: "arab frp", priceUsd: 1, image: "https://i.ibb.co/9m7Yzm2J/ZXX.png", category: 'rent' },
+    { id: 22, name: "CM2 Dongle Rent (Version 1.58 )", priceUsd: 2, duration: "30 minutes", image: "https://i.ibb.co/HLDfbpHs/cm2.png", category: 'rent' },
     { id: 11, name: "Anonyshu Tool Rent", priceUsd: 3, duration: "12 hours", image: "https://i.ibb.co/HfVx4wQV/vc.png", category: 'rent' },
     { id: 1, name: "MDM FIX TOOL", priceUsd: 3, duration: "6 hours", image: "https://i.ibb.co/jZGj42qP/Capture.png", category: 'rent' },
     { id: 5, name: "DFT Pro Tool", priceUsd: 3, duration: "48 hours", image: "https://i.ibb.co/7t8DFxkF/dft-pro-tool.png", category: 'rent' },
