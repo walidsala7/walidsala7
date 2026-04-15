@@ -47,7 +47,7 @@ export const productsData: Product[] = [
     { id: 110, name: "E-GSM Credit", priceUsd: 0.15, image: "https://i.ibb.co/HT0NFsdJ/SDADA.png", category: 'credit', minQty: 10, maxQty: 100 },
     { id: 106, name: "SamsungTool.us Credit", priceUsd: 1.30, image: "https://i.ibb.co/kghhQB2b/ASDSADAF.png", category: 'credit', minQty: 10, maxQty: 10000 },
     { id: 120, name: "Phoenix Service Tool - Credit", priceUsd: 1.30, image: "https://i.ibb.co/1t5FmvZP/image.png", category: 'credit' },
-    { id: 104, name: "chimera tool Credit", priceUsd: 1.30, image: "https://i.ibb.co/DBJ4WDq/SADSAD.png", category: 'credit' },
+    { id: 104, name: "chimera tool Credit", priceUsd: 1.30, image: "https://i.ibb.co/PZpB3tkX/chimera.png", category: 'credit' },
     { id: 201, name: "Ready Apple ID Without 2FA", priceUsd: 3.30, image: "https://i.ibb.co/0yjrk1k4/image.png", category: 'server' },
     { 
       id: 202, 
