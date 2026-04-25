@@ -57,7 +57,8 @@ import {
   Currency, 
   OrderStatus, 
   RemoteTool, 
-  PaymentType 
+  PaymentType,
+  Order
 } from './types';
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
@@ -71,7 +72,7 @@ export default function App() {
   const [currency, setCurrency] = useState<Currency>("USD");
   const [isDarkMode, setIsDarkMode] = useState(true);
   
-  const [currentCategory, setCurrentCategory] = useState<Product['category']>('rent');
+  const [currentCategory, setCurrentCategory] = useState<Product['category'] | 'orders'>('rent');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [copyStatus, setCopyStatus] = useState("");
   const [orderSuccess, setOrderSuccess] = useState(false);
@@ -80,6 +81,7 @@ export default function App() {
   const [orderStatus, setOrderStatus] = useState<OrderStatus>("pending");
   const [lastUpdateId, setLastUpdateId] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
+  const [orders, setOrders] = useState<Order[]>([]);
 
   const [remoteTool, setRemoteTool] = useState<RemoteTool>("ultra");
   const [ultraId, setUltraId] = useState("");
@@ -95,7 +97,24 @@ export default function App() {
   const [downloadLink, setDownloadLink] = useState("");
   const [sn, setSn] = useState("");
 
-  const t = translations[lang];
+  const t = translations[lang as keyof typeof translations];
+
+  // Load orders from localStorage
+  useEffect(() => {
+    const savedOrders = localStorage.getItem('ws_orders');
+    if (savedOrders) {
+      try {
+        setOrders(JSON.parse(savedOrders));
+      } catch (e) {
+        console.error("Failed to parse orders", e);
+      }
+    }
+  }, []);
+
+  // Save orders to localStorage
+  useEffect(() => {
+    localStorage.setItem('ws_orders', JSON.stringify(orders));
+  }, [orders]);
 
   // Dark mode effect
   useEffect(() => {
@@ -142,30 +161,51 @@ export default function App() {
   // Poll for order status
   useEffect(() => {
     let pollInterval: NodeJS.Timeout;
-    if (orderSuccess && orderStatus === "pending" && orderId) {
+    const hasPendingOrders = orders.some(o => o.status === "pending");
+    
+    if (hasPendingOrders || (orderSuccess && orderStatus === "pending" && orderId)) {
       pollInterval = setInterval(async () => {
         try {
           const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}`);
           const data = await response.json();
           if (data.ok && data.result.length > 0) {
             const updates = data.result;
+            let updatedOrders = [...orders];
+            let changed = false;
+            let maxUpdateId = lastUpdateId;
+
             for (const update of updates) {
-              setLastUpdateId(update.update_id);
+              maxUpdateId = Math.max(maxUpdateId, update.update_id);
               if (update.callback_query && update.callback_query.data) {
                 const [action, id] = update.callback_query.data.split('_');
-                if (id === orderId.toString()) {
+                
+                // Update current active order in modal if it matches
+                if (orderId && id === orderId.toString()) {
                   if (action === 'accept') setOrderStatus("accepted");
                   if (action === 'reject') setOrderStatus("rejected");
-                  fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/answerCallbackQuery?callback_query_id=${update.callback_query.id}`);
                 }
+
+                // Update orders in history
+                const orderIdx = updatedOrders.findIndex(o => o.id.toString() === id);
+                if (orderIdx !== -1 && updatedOrders[orderIdx].status === "pending") {
+                  updatedOrders[orderIdx].status = action === 'accept' ? 'accepted' : 'rejected';
+                  changed = true;
+                }
+                
+                fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/answerCallbackQuery?callback_query_id=${update.callback_query.id}`);
               }
+            }
+
+            setLastUpdateId(maxUpdateId);
+            if (changed) {
+              setOrders(updatedOrders);
             }
           }
         } catch (e) {}
       }, 3000);
     }
     return () => clearInterval(pollInterval);
-  }, [orderSuccess, orderStatus, orderId, lastUpdateId]);
+  }, [orderSuccess, orderStatus, orderId, lastUpdateId, orders]);
 
   // Timer
   useEffect(() => {
@@ -248,6 +288,29 @@ export default function App() {
     else if (paymentType === 'instapay') message += `💸 Method: InstaPay\n📞 From: ${senderPhone}\n`;
     else if (paymentType === 'paypal') message += `🅿️ Method: PayPal\n👤 From: ${senderPhone}\n`;
     
+    const newOrder: Order = {
+      id: newOrderId,
+      productName: selectedProduct.name,
+      productImage: selectedProduct.image,
+      category: selectedProduct.category,
+      priceUsd: currentPrice,
+      quantity: selectedProduct.sizeOptions ? 1 : quantity,
+      totalPrice: formatPrice(currentPrice, true, selectedProduct.category !== 'rent'),
+      status: "pending",
+      timestamp: Date.now(),
+      paymentType: paymentType,
+      details: {
+        sn: selectedProduct.requiresSN ? sn : undefined,
+        email: selectedProduct.category === 'credit' ? email : undefined,
+        whatsappNumber: selectedProduct.category === 'server' ? whatsappNumber : undefined,
+        remoteTool: selectedProduct.category === 'rent' ? remoteTool : undefined,
+        ultraId: remoteTool === 'ultra' ? ultraId : undefined,
+        anyDeskId: remoteTool === 'anydesk' ? anyDeskId : undefined,
+        size: selectedSize || undefined,
+      }
+    };
+    setOrders(prev => [newOrder, ...prev]);
+
     try {
       await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
@@ -377,7 +440,8 @@ export default function App() {
             {[
               { id: 'rent', label: t.rentalsTab, icon: <Laptop size={18} /> },
               { id: 'credit', label: t.creditsTab, icon: <Zap size={18} /> },
-              { id: 'server', label: t.serverTab, icon: <Monitor size={18} /> }
+              { id: 'server', label: t.serverTab, icon: <Monitor size={18} /> },
+              { id: 'orders', label: t.ordersTab, icon: <Clock size={18} /> }
             ].map((cat) => (
               <button 
                 key={cat.id}
@@ -395,10 +459,82 @@ export default function App() {
           </div>
         </div>
 
-        <motion.div 
-          layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-20"
-        >
+        {currentCategory === 'orders' ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-4xl mx-auto mb-20 space-y-6"
+          >
+            {orders.length === 0 ? (
+              <div className="text-center py-20 bg-white dark:bg-[#161B26] rounded-[2.5rem] border-2 border-slate-100 dark:border-slate-800">
+                <div className="w-20 h-20 bg-slate-50 dark:bg-[#1F2937] rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Smartphone size={32} className="text-slate-300" />
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
+                  {lang === 'ar' ? 'لا توجد طلبات بعد' : 'No orders yet'}
+                </h3>
+                <p className="text-slate-500 dark:text-slate-400 font-bold">
+                  {lang === 'ar' ? 'ابدأ في استئجار الأدوات وستظهر هنا' : 'Start renting tools and they will appear here'}
+                </p>
+              </div>
+            ) : (
+              orders.map((order) => (
+                <div 
+                  key={order.id}
+                  className="bg-white dark:bg-[#161B26] p-6 rounded-[2rem] border-2 border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all"
+                >
+                  <div className="flex flex-col sm:flex-row items-center gap-6">
+                    <div className="w-20 h-20 rounded-2xl overflow-hidden shrink-0">
+                      <img src={order.productImage} alt={order.productName} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex-grow text-center sm:text-left space-y-1">
+                      <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2">
+                        <h4 className="font-black text-slate-900 dark:text-white text-lg">{order.productName}</h4>
+                        <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-widest ${
+                          order.status === 'accepted' ? 'bg-emerald-100 text-emerald-600' :
+                          order.status === 'rejected' ? 'bg-rose-100 text-rose-600' :
+                          'bg-blue-100 text-blue-600 animate-pulse'
+                        }`}>
+                          {order.status === 'accepted' ? t.statusAccepted : 
+                           order.status === 'rejected' ? t.statusRejected : 
+                           t.statusPending}
+                        </span>
+                      </div>
+                      <p className="text-xs font-bold text-slate-400">
+                        {new Date(order.timestamp).toLocaleString(lang === 'ar' ? 'ar-EG' : 'en-US')}
+                      </p>
+                      <div className="flex flex-wrap justify-center sm:justify-start gap-4 mt-2">
+                        <div className="flex items-center gap-1.5">
+                          <Wallet size={12} className="text-slate-400" />
+                          <span className="text-xs font-black text-slate-600 dark:text-slate-300">{order.totalPrice}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <CreditCard size={12} className="text-slate-400" />
+                          <span className="text-xs font-black text-slate-600 dark:text-slate-300 uppercase">{order.paymentType}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="shrink-0 flex items-center gap-2">
+                      <button 
+                        onClick={() => {
+                          // Simple way to show details - maybe open the modal again with this order data
+                          // For now, let's just use it to show status
+                        }}
+                        className="px-6 py-3 bg-slate-50 dark:bg-[#1F2937] text-slate-600 dark:text-slate-300 rounded-xl font-black text-sm hover:bg-slate-100 transition-all"
+                      >
+                        ID: {order.id.toString().slice(-6)}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </motion.div>
+        ) : (
+          <motion.div 
+            layout
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-20"
+          >
           {productsData
             .filter(p => p.category === currentCategory)
             .filter(p => (lang === 'en' && p.nameEn ? p.nameEn : p.name).toLowerCase().includes(searchQuery.toLowerCase()))
@@ -456,8 +592,10 @@ export default function App() {
             </motion.div>
           ))}
         </motion.div>
+      )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+        {currentCategory !== 'orders' && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           {[
             { icon: <Zap className="text-blue-600" />, title: lang === 'ar' ? 'تسليم فوري' : 'Instant Delivery', desc: lang === 'ar' ? 'يتم تفعيل طلبك في دقائق معدودة' : 'Your order is activated in minutes' },
             { icon: <ShieldCheck className="text-green-500" />, title: lang === 'ar' ? 'دفع آمن' : 'Secure Payment', desc: lang === 'ar' ? 'وسائل دفع موثوقة ومشفرة' : 'Trusted and encrypted payment methods' },
@@ -481,8 +619,10 @@ export default function App() {
             </motion.div>
           ))}
         </div>
+      )}
 
-        <div className="bg-white dark:bg-[#161B26] rounded-[3rem] p-8 md:p-16 border border-slate-100 dark:border-slate-800 shadow-2xl shadow-slate-200/50 dark:shadow-none max-w-5xl mx-auto text-center relative overflow-hidden">
+        {currentCategory !== 'orders' && (
+          <div className="bg-white dark:bg-[#161B26] rounded-[3rem] p-8 md:p-16 border border-slate-100 dark:border-slate-800 shadow-2xl shadow-slate-200/50 dark:shadow-none max-w-5xl mx-auto text-center relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-rose-500 via-blue-600 to-amber-500"></div>
           
           <div className="relative z-10">
@@ -539,7 +679,8 @@ export default function App() {
             </div>
           </div>
         </div>
-      </main>
+      )}
+    </main>
 
       <footer className="max-w-7xl mx-auto px-4 py-20 border-t dark:border-slate-800 mt-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -671,7 +812,7 @@ export default function App() {
                             </div>
                           </div>
                           <div className="space-y-3">
-                            <h3 className="font-black text-slate-900 dark:text-white text-3xl tracking-tight">{t.verifying}</h3>
+                            <h3 className="font-black text-slate-900 dark:text-white text-3xl tracking-tight">{t.statusPending}</h3>
                             <div className="flex items-center justify-center gap-2 text-blue-600 bg-blue-50 dark:bg-blue-950/30 px-4 py-2 rounded-full mx-auto w-fit">
                               <ShieldCheck size={16} />
                               <span className="text-[10px] font-black uppercase tracking-wider">Secure Verification</span>

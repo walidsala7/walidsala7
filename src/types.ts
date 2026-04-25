@@ -15,6 +15,28 @@ export interface Product {
   downloadLink?: string;
 }
 
+export interface Order {
+  id: number;
+  productName: string;
+  productImage: string;
+  category: Product['category'];
+  priceUsd: number;
+  quantity: number;
+  totalPrice: string;
+  status: OrderStatus;
+  timestamp: number;
+  paymentType: PaymentType;
+  details: {
+    sn?: string;
+    email?: string;
+    whatsappNumber?: string;
+    remoteTool?: RemoteTool;
+    ultraId?: string;
+    anyDeskId?: string;
+    size?: string;
+  };
+}
+
 export type Language = 'ar' | 'en';
 export type Currency = 'USD' | 'EGP';
 export type OrderStatus = 'pending' | 'accepted' | 'rejected';
