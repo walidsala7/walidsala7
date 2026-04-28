@@ -429,11 +429,26 @@ export default function App() {
             <Search size={22} className={`absolute ${t.dir === 'rtl' ? 'right-6' : 'left-6'} top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors z-10`} />
             <input 
               type="text" 
-              placeholder={t.searchPlaceholder}
+              placeholder={currentCategory === 'orders' ? (t as any).searchOrdersPlaceholder : t.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full ${t.dir === 'rtl' ? 'pr-16 pl-8' : 'pl-16 pr-8'} py-5 rounded-[2rem] border-2 border-white dark:border-slate-800 focus:border-blue-500 outline-none font-bold shadow-xl shadow-slate-200/50 dark:shadow-none transition-all bg-white dark:bg-[#161B26] text-slate-900 dark:text-white relative z-0`}
+              className={`w-full ${t.dir === 'rtl' ? 'pr-16 pl-32' : 'pl-16 pr-32'} py-5 rounded-[2rem] border-2 border-white dark:border-slate-800 focus:border-blue-500 outline-none font-bold shadow-xl shadow-slate-200/50 dark:shadow-none transition-all bg-white dark:bg-[#161B26] text-slate-900 dark:text-white relative z-0`}
             />
+            <div className={`absolute ${t.dir === 'rtl' ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2 flex items-center gap-2 z-10`}>
+              {searchQuery && (
+                <button 
+                  onClick={() => setSearchQuery("")}
+                  className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              )}
+              <button 
+                className="px-6 py-3 bg-blue-600 text-white rounded-[1.5rem] font-black text-sm active:scale-95 transition-all hover:bg-blue-700 shadow-lg shadow-blue-500/20"
+              >
+                {(t as any).searchButton}
+              </button>
+            </div>
           </div>
 
           <div className="flex justify-center gap-4 mb-8 overflow-x-auto no-scrollbar py-2 px-4">
@@ -445,7 +460,10 @@ export default function App() {
             ].map((cat) => (
               <button 
                 key={cat.id}
-                onClick={() => setCurrentCategory(cat.id as any)} 
+                onClick={() => {
+                  setCurrentCategory(cat.id as any);
+                  setSearchQuery("");
+                }} 
                 className={`px-8 py-4 rounded-[2rem] font-black transition-all whitespace-nowrap flex items-center gap-3 border-2 ${
                   currentCategory === cat.id 
                     ? 'bg-blue-600 text-white border-blue-600 shadow-xl shadow-blue-500/20 scale-105' 
@@ -478,7 +496,50 @@ export default function App() {
                 </p>
               </div>
             ) : (
-              orders.map((order) => (
+              (() => {
+                if (!searchQuery) {
+                  return (
+                    <div className="text-center py-20 bg-white dark:bg-[#161B26] rounded-[2.5rem] border-2 border-slate-100 dark:border-slate-800">
+                      <div className="w-20 h-20 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Hash size={32} className="text-blue-500" />
+                      </div>
+                      <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
+                        {lang === 'ar' ? 'أدخل كود الطلب' : 'Enter Order Code'}
+                      </h3>
+                      <p className="text-slate-500 dark:text-slate-400 font-bold max-w-[280px] mx-auto">
+                        {lang === 'ar' 
+                          ? 'يرجى إدخال كود الطلب الخاص بك لمتابعة الحالة' 
+                          : 'Please enter your order code to track your status'}
+                      </p>
+                    </div>
+                  );
+                }
+
+                const filteredOrders = orders.filter((order) => {
+                  const query = searchQuery.toLowerCase();
+                  return (
+                    order.id.toString() === query || 
+                    order.productName.toLowerCase().includes(query)
+                  );
+                });
+
+                if (filteredOrders.length === 0) {
+                  return (
+                    <div className="text-center py-20 bg-white dark:bg-[#161B26] rounded-[2.5rem] border-2 border-slate-100 dark:border-slate-800">
+                      <div className="w-20 h-20 bg-slate-50 dark:bg-[#1F2937] rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Search size={32} className="text-slate-300" />
+                      </div>
+                      <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
+                        {lang === 'ar' ? 'لم يتم العثور على الطلب' : 'Order Not Found'}
+                      </h3>
+                      <p className="text-slate-500 dark:text-slate-400 font-bold">
+                        {lang === 'ar' ? 'تأكد من إدخال كود الطلب الصحيح' : 'Please check if you entered the correct code'}
+                      </p>
+                    </div>
+                  );
+                }
+
+                return filteredOrders.map((order) => (
                 <div 
                   key={order.id}
                   className="bg-white dark:bg-[#161B26] p-6 rounded-[2rem] border-2 border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all"
@@ -495,9 +556,9 @@ export default function App() {
                           order.status === 'rejected' ? 'bg-rose-100 text-rose-600' :
                           'bg-blue-100 text-blue-600 animate-pulse'
                         }`}>
-                          {order.status === 'accepted' ? t.statusAccepted : 
-                           order.status === 'rejected' ? t.statusRejected : 
-                           t.statusPending}
+                          {order.status === 'accepted' ? (t as any).statusAccepted : 
+                           order.status === 'rejected' ? (t as any).statusRejected : 
+                           (t as any).statusPending}
                         </span>
                       </div>
                       <p className="text-xs font-bold text-slate-400">
@@ -517,17 +578,22 @@ export default function App() {
                     <div className="shrink-0 flex items-center gap-2">
                       <button 
                         onClick={() => {
-                          // Simple way to show details - maybe open the modal again with this order data
-                          // For now, let's just use it to show status
+                          navigator.clipboard.writeText(order.id.toString());
+                          setCopyStatus(order.id.toString());
+                          setTimeout(() => setCopyStatus(""), 2000);
                         }}
-                        className="px-6 py-3 bg-slate-50 dark:bg-[#1F2937] text-slate-600 dark:text-slate-300 rounded-xl font-black text-sm hover:bg-slate-100 transition-all"
+                        className="px-6 py-3 bg-slate-50 dark:bg-[#1F2937] text-slate-600 dark:text-slate-300 rounded-xl font-black text-sm hover:bg-slate-100 transition-all flex items-center gap-2 group/btn"
                       >
-                        ID: {order.id.toString().slice(-6)}
+                        <span className="text-slate-400 group-hover/btn:text-blue-600 transition-colors">
+                          {copyStatus === order.id.toString() ? <CheckCircle2 size={14} /> : <Hash size={14} />}
+                        </span>
+                        ID: {order.id.toString()}
                       </button>
                     </div>
                   </div>
                 </div>
-              ))
+                ));
+              })()
             )}
           </motion.div>
         ) : (
@@ -813,11 +879,39 @@ export default function App() {
                           </div>
                           <div className="space-y-3">
                             <h3 className="font-black text-slate-900 dark:text-white text-3xl tracking-tight">{t.statusPending}</h3>
+                            
+                            <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-[2rem] border-2 border-blue-100 dark:border-blue-900/50 space-y-4">
+                              <p className="text-blue-600 dark:text-blue-400 font-black text-sm uppercase tracking-widest">
+                                {(t as any).orderCodeLabel}
+                              </p>
+                              <div className="flex flex-col gap-3">
+                                <span className="text-4xl font-black text-slate-900 dark:text-white font-mono tracking-tighter">
+                                  {orderId}
+                                </span>
+                                <button 
+                                  onClick={() => handleCopy(orderId?.toString() || "", 'order_code')}
+                                  className={`flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-black text-xs transition-all ${
+                                    copyStatus === 'order_code' 
+                                      ? 'bg-emerald-500 text-white' 
+                                      : 'bg-white dark:bg-[#161B26] text-blue-600 border border-blue-100 dark:border-blue-900/50 hover:bg-blue-50 shadow-sm'
+                                  }`}
+                                >
+                                  {copyStatus === 'order_code' ? <CheckCircle2 size={16} /> : <Hash size={16} />}
+                                  {copyStatus === 'order_code' ? t.copied : (t as any).copyCode}
+                                </button>
+                              </div>
+                            </div>
+
                             <div className="flex items-center justify-center gap-2 text-blue-600 bg-blue-50 dark:bg-blue-950/30 px-4 py-2 rounded-full mx-auto w-fit">
                               <ShieldCheck size={16} />
                               <span className="text-[10px] font-black uppercase tracking-wider">Secure Verification</span>
                             </div>
                             <p className="text-slate-500 dark:text-slate-400 font-bold text-sm leading-relaxed max-w-[280px] mx-auto">{t.waitOwner}</p>
+                            <p className="text-blue-500 font-black text-[10px] uppercase tracking-widest mt-2 animate-pulse">
+                              {lang === 'ar' 
+                                ? 'يمكنك متابعة حالة طلبك في سجل الطلبات باستخدام هذا الكود' 
+                                : 'You can track your order status in Orders History using this code'}
+                            </p>
                           </div>
                           <button onClick={() => { setOrderSuccess(false); setSelectedProduct(null); }} className="px-8 py-4 bg-slate-100 dark:bg-[#1F2937] hover:bg-rose-50 dark:hover:bg-rose-950/30 text-slate-400 hover:text-rose-600 rounded-3xl font-black text-sm transition-all border-2 border-transparent hover:border-rose-100 dark:hover:border-rose-900 w-full">
                             {t.cancelProcess}
